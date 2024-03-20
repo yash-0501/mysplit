@@ -17,8 +17,6 @@ async function createUserAndBalance(userData: UserType) {
 
     await session.commitTransaction(); // Commit the transaction
     session.endSession();
-
-    console.log("User and balance created successfully");
   } catch (error) {
     console.error("Error creating user and balance:", error);
 

@@ -19,8 +19,16 @@ const getAllExpensesHandler = async (req: Request, res: Response) => {
       const user = await User.findOne({ email: reqUser.email });
       if (!user) return res.status(401).json({ error: "No such user" });
       const expenses = await Expense.find({
-        $or: [{ createdBy: user }, { "participants.participant": user }, {"paidBy": user}],
-      }).sort({ _id: -1 });
+        $or: [
+          { createdBy: user },
+          { "participants.participant": user },
+          { paidBy: user },
+        ],
+      })
+        .sort({ _id: -1 })
+        .populate("participants.participant", "email")
+        .populate("paidBy", "email")
+        .populate("createdBy", "email");
       return res.json({ expenses, user: req.user });
     } else {
       res.json({ error: "Please Login" });
@@ -52,16 +60,13 @@ const addExpenseHandler = async (
     participants,
     splitType = splitTypes.equal,
     splitShares = [],
-    expenseType = expenseTypes.individual
-
+    expenseType = expenseTypes.individual,
   } = req.body as ExpenseRequestBody;
   const createdAt = Date.now();
   const createdBy = req.user;
-  if(!createdBy)
-    return res.json({error:"Please Login"});
-  
-  
-  if ((splitType).toUpperCase() != splitTypes.equal) {
+  if (!createdBy) return res.json({ error: "Please Login" });
+
+  if (splitType.toUpperCase() != splitTypes.equal) {
     if (isValidSplit(splitShares) == 1) {
       return res.status(401).json({ error: "A split is required!" });
     } else if (isValidSplit(splitShares) == 2) {
@@ -69,7 +74,7 @@ const addExpenseHandler = async (
     }
   }
   let splitByParticipants;
-  switch ((splitType).toUpperCase()) {
+  switch (splitType.toUpperCase()) {
     case splitTypes.percentage:
       splitByParticipants = fetchPercentageSplit(
         participants,
@@ -108,7 +113,7 @@ const addExpenseHandler = async (
       participants: splitByParticipants,
       splitType,
       expenseType,
-      createdBy
+      createdBy,
     });
     const userId = parsedExpense["paidBy"];
     try {
