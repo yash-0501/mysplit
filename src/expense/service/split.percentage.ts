@@ -24,7 +24,7 @@ export const fetchPercentageSplit = (
   let splitByParticipants: ParticipantsType[] = [];
 
   for (let i = 0; i < participants.length; i++) {
-    const amt = amount * (percentage_split[i] * 0.01);
+    const amt = parseFloat((amount * (percentage_split[i] * 0.01)).toFixed(2));
     splitByParticipants.push({
       participant: participants[i],
       share: amt,
