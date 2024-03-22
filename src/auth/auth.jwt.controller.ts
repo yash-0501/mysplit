@@ -5,9 +5,11 @@ import { ZodError } from "zod";
 import jwt from "jsonwebtoken";
 import { z } from "zod";
 import validator from "email-validator";
+import { Balance } from "../balance/balance.models";
+import { createUserAndBalance } from "./auth.user-balance-service";
 
 const registerHandler = async (req: Request, res: Response) => {
-  try {
+
     // ** Get The User Data From Body ;
     const user = req.body;
 
@@ -20,18 +22,7 @@ const registerHandler = async (req: Request, res: Response) => {
         password,
         confirm,
       });
-    } catch (err) {
-      if (err instanceof ZodError) {
-        // console.log(err);
-        const errorMessage = err.errors.map((err) => err.message).join(", ");
-        return res
-          .status(404)
-          .json({ error: errorMessage, message: "Some error occurred" });
-      } else
-        return res.status(404).json({ message: "Some Error Occured", err });
-    }
-
-    // ** Check the email all ready exist  in database or not ;
+      // ** Check the email all ready exist  in database or not ;
     // ** Import the user model from "./models/user";
 
     const isEmailAllReadyExist = await User.findOne({
@@ -52,29 +43,33 @@ const registerHandler = async (req: Request, res: Response) => {
     // ** You can use bcrypt to hash the plain password.
 
     // now create the user;
-    const newUser = await User.create({
-      name,
-      email,
-      password,
-    });
+    await createUserAndBalance(parsedUser)
+    // const newUser = await User.create({
+    //   name,
+    //   email,
+    //   password,
+    // });
 
+    // const userBalance = await Balance.create({
+    //   user: newUser
+    // })
     // Send the newUser as  response;
-    res.status(200).json({
+    return res.status(200).json({
       status: 201,
       success: true,
       message: " User created Successfully",
-      user: newUser,
     });
-  } catch (error: any) {
-    // console the error to debug
-    console.log(error);
 
-    // Send the error message to the client
-    res.status(400).json({
-      status: 400,
-      message: error.message.toString(),
-    });
-  }
+    } catch (err) {
+      if (err instanceof ZodError) {
+        // console.log(err);
+        const errorMessage = err.errors.map((err) => err.message).join(", ");
+        return res
+          .status(404)
+          .json({ error: errorMessage, message: "Some error occurred" });
+      } else
+        return res.status(404).json({ message: "Some Error Occured", err });
+    }
 };
 
 const loginHandler = async (req: Request, res: Response) => {
@@ -155,7 +150,7 @@ const loginHandler = async (req: Request, res: Response) => {
       httpOnly: true,
       secure: true, // Mark as secure, only transmit over HTTPS
       sameSite: "strict", // Enforce strict same-site policy
-    //   maxAge: 20000, // 1 hour expiration
+      //   maxAge: 20000, // 1 hour expiration
       path: "/", // Path for the cookie
     });
 

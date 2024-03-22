@@ -25,6 +25,6 @@ userSchema.methods.comparePassword = async function (enteredPassword: string) {
   return await bcrypt.compare(enteredPassword, user!.password);
 };
 
-const User = model("split_users", userSchema);
+const User = model("User", userSchema);
 
 export { User, userSchema };
