@@ -7,6 +7,7 @@ type debts = {
   to: Schema.Types.ObjectId;
   debtType: String;
   amount: number;
+  group?: Schema.Types.ObjectId | undefined;
 };
 
 const getDebts = async (debts: DebtType[], currUser: UserType) => {
@@ -15,11 +16,14 @@ const getDebts = async (debts: DebtType[], currUser: UserType) => {
     const user = await User.findOne(currUser);
     const paidByUser = await User.findOne(debt.paidBy);
 
+    let data;
+
     if (paidByUser?.email == user?.email) {
-      res.push({ to: debt.paidTo, debtType: "gets back", amount: debt.amount });
+      data = { to: debt.paidTo, debtType: "gets back", amount: debt.amount, group: debt.group };
     } else {
-      res.push({ to: debt.paidBy, debtType: "owes", amount: debt.amount });
+      data = { to: debt.paidBy, debtType: "owes", amount: debt.amount, group: debt.group };
     }
+    res.push(data);
   }
   return res;
 };

@@ -43,6 +43,7 @@ const expenseSchema = z.object({
   }),
   splitType: z.nativeEnum(splitTypes).readonly().default(splitTypes.equal).optional(),
   expenseType: z.nativeEnum(expenseTypes).readonly().default(expenseTypes.individual).optional(),
+  group: z.custom<Schema.Types.ObjectId>().optional(),
 });
 
 const expensesListSchema = z.array(expenseSchema);

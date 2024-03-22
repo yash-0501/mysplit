@@ -3,6 +3,7 @@ import { Expense } from "./expense.models";
 import { ExpenseType, expenseTypes } from "./expense.zodSchema";
 import { User } from "../user/user.models";
 import { addToBalance } from "../balance/balance.services";
+import { Group } from "../group/group.models";
 
 const createExpenseandUpdateBalance = async (expense: ExpenseType) => {
   const session = await startSession();
@@ -18,8 +19,16 @@ const createExpenseandUpdateBalance = async (expense: ExpenseType) => {
       const participantUser = await User.findById(paidTo);
       if (!participantUser) throw new Error("Invalid User");
       const amount = pData.share;
+      const group = newExpense.group;
+      if (group) {
+        const isValidGroup = await Group.findOne({
+          $and: [{ members: paidBy }, { members: paidTo }, {_id: group}],
+        });
+        
+        if (!isValidGroup) throw new Error("Invalid Group Details");
+      }
       if(newExpense){
-        await addToBalance({ paidBy:paidBy, paidTo: paidTo, amount: amount, debtType: newExpense.expenseType || expenseTypes.individual }, session);
+        await addToBalance({ paidBy:paidBy, paidTo: paidTo, amount: amount, debtType: newExpense.expenseType || expenseTypes.individual, group: newExpense.group }, session);
       }else{
         throw new Error("Error saving expense!")
       }

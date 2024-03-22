@@ -28,13 +28,14 @@ const getAllExpensesHandler = async (req: Request, res: Response) => {
         .sort({ _id: -1 })
         .populate("participants.participant", "email")
         .populate("paidBy", "email")
-        .populate("createdBy", "email");
+        .populate("createdBy", "email")
+        .populate("group");
       return res.json({ expenses, user: req.user });
     } else {
       res.json({ error: "Please Login" });
     }
   } catch (err) {
-    console.log(err);
+    
     return res.status(400).json(err);
   }
 };
@@ -47,6 +48,7 @@ interface ExpenseRequestBody {
   splitType?: string;
   splitShares?: number[];
   expenseType?: string;
+  group?: ObjectId;
 }
 
 const addExpenseHandler = async (
@@ -60,9 +62,10 @@ const addExpenseHandler = async (
     participants,
     splitType = splitTypes.equal,
     splitShares = [],
-    expenseType = expenseTypes.individual,
+    group,
   } = req.body as ExpenseRequestBody;
-  const createdAt = Date.now();
+  let expenseType = expenseTypes.individual;
+  if (group) expenseType = expenseTypes.group;
   const createdBy = req.user;
   if (!createdBy) return res.json({ error: "Please Login" });
 
@@ -114,6 +117,7 @@ const addExpenseHandler = async (
       splitType,
       expenseType,
       createdBy,
+      group,
     });
     const userId = parsedExpense["paidBy"];
     try {
@@ -132,11 +136,15 @@ const addExpenseHandler = async (
         .status(200)
         .json({ message: "Expense Added Successfully", expense: newExpense });
     } catch (err) {
-      res.status(500).json({ err, message: "Some Error occured" });
+      if (err instanceof Error)
+        return res
+          .status(500)
+          .json({ error: err.message, message: "Some Error occured" });
+      return res.status(500).json({ error: err, message: "Some Error occured" });
     }
   } catch (err) {
     if (err instanceof ZodError) {
-      console.log(err);
+      
       const errorMessage = err.errors.map((err) => err.message).join(", ");
       return res
         .status(401)

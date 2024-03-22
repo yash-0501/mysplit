@@ -7,6 +7,7 @@ import { sessionMiddleware } from "./auth/session.middlewares";
 import { passport } from "./auth/passport.middleware";
 import { router as authRouter } from "./auth/auth.routes";
 import { router as userRouter } from "./user/user.router";
+import { router as groupRouter } from "./group/group.routes";
 import { isLoggedIn } from "./auth/auth.middleware";
 import { showBalance } from "./balance/balance.controllers";
 var cookieParser = require("cookie-parser");
@@ -48,6 +49,7 @@ app.use("/expenses", isLoggedIn, expenseRouter);
 app.use("/auth", authRouter);
 app.use("/users", userRouter);
 app.use("/balance", isLoggedIn, showBalance);
+app.use("/groups", isLoggedIn, groupRouter);
 
 connectMongoDb(uri)
   .then(() => {

@@ -2,9 +2,10 @@ import { Balance, Debt } from "./balance.models";
 import { DebtType, debtSchema } from "./balance.zodSchema";
 import { User } from "../user/user.models";
 import { ClientSession } from "mongoose";
+import { Group } from "../group/group.models";
 
 const addToBalance = async (data: DebtType, session: ClientSession) => {
-  const { paidBy, paidTo, amount, debtType } = data;
+  const { paidBy, paidTo, amount, debtType, group } = data;
 
   try {
     const parsedDebt = await debtSchema.parseAsync({
@@ -12,6 +13,7 @@ const addToBalance = async (data: DebtType, session: ClientSession) => {
       paidTo,
       amount,
       debtType,
+      group,
     });
 
     if (paidBy === paidTo) {
@@ -19,10 +21,18 @@ const addToBalance = async (data: DebtType, session: ClientSession) => {
 
       const paidByBalanceDetails = await Balance.findOne({
         user: paidByUser,
+        group: group,
+        balanceType: debtType,
       }).session(session);
 
       if (!paidByBalanceDetails) {
-        const bal = new Balance({ user: paidByUser });
+        
+        const bal = new Balance({
+          user: paidByUser,
+          group: group,
+          balanceType: debtType,
+        });
+        
         await bal.save({ session });
       }
 
@@ -30,7 +40,7 @@ const addToBalance = async (data: DebtType, session: ClientSession) => {
         $inc: { totalShare: parseFloat(amount.toFixed(2)) },
       };
       const updatedBalPaidBy = await Balance.findOneAndUpdate(
-        { user: paidByUser },
+        { user: paidByUser, group: group, balanceType: debtType },
         paidByUpdateDetails,
         { new: true, session: session }
       );
@@ -42,6 +52,8 @@ const addToBalance = async (data: DebtType, session: ClientSession) => {
         { $and: [{ paidBy }, { paidTo }] },
         { $and: [{ paidBy: paidTo }, { paidTo: paidBy }] },
       ],
+      group: group,
+      debtType: debtType,
     }).session(session);
 
     if (!debt) {
@@ -58,6 +70,8 @@ const addToBalance = async (data: DebtType, session: ClientSession) => {
               amount: Math.abs(parseFloat(debtDiff.toFixed(2))),
               paidBy: parsedDebt.paidBy,
               paidTo: parsedDebt.paidTo,
+              group: group,
+              balanceType: debtType,
             });
             await newDebt.save({ session });
           }
@@ -80,10 +94,16 @@ const addToBalance = async (data: DebtType, session: ClientSession) => {
 
     const paidByBalanceDetails = await Balance.findOne({
       user: paidByUser,
+      group: group,
+      balanceType: debtType,
     }).session(session);
 
     if (!paidByBalanceDetails) {
-      const bal = new Balance({ user: paidByUser });
+      const bal = new Balance({
+        user: paidByUser,
+        group: group,
+        balanceType: debtType,
+      });
       await bal.save({ session });
     }
 
@@ -94,7 +114,7 @@ const addToBalance = async (data: DebtType, session: ClientSession) => {
       },
     };
     const updatedBalPaidBy = await Balance.findOneAndUpdate(
-      { user: paidByUser },
+      { user: paidByUser, group: group, balanceType: debtType },
       paidByUpdateDetails,
       { new: true, session: session }
     );
@@ -103,10 +123,16 @@ const addToBalance = async (data: DebtType, session: ClientSession) => {
 
     const paidBToBalanceDetails = await Balance.findOne({
       user: paidToUser,
+      group: group,
+      balanceType: debtType,
     }).session(session);
 
     if (!paidBToBalanceDetails) {
-      const bal = new Balance({ user: paidToUser });
+      const bal = new Balance({
+        user: paidToUser,
+        group: group,
+        balanceType: debtType,
+      });
       await bal.save({ session });
     }
 
@@ -118,12 +144,12 @@ const addToBalance = async (data: DebtType, session: ClientSession) => {
     };
 
     const updatedBalPaidTo = await Balance.findOneAndUpdate(
-      { user: paidToUser },
+      { user: paidToUser, group: group, balanceType: debtType },
       paidToUpdateDetails,
       { new: true, session: session }
     );
   } catch (err) {
-    console.log(err);
+    
     throw Error("Some Error is there!");
   }
 };
