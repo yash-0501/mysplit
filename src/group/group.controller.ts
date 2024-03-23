@@ -1,11 +1,12 @@
 import { Request, Response } from "express";
 import { User } from "../user/user.models";
 import { UserType } from "../user/user.zodSchema";
-import { Types } from "mongoose";
+import { Schema, Types } from "mongoose";
 import { Group } from "./group.models";
 import { groupSchema } from "./group.zodschema";
 import { Expense } from "../expense/expense.models";
 import { Balance, Debt } from "../balance/balance.models";
+import { fetchGroupWiseExpenseSummary } from "../expense/service/fetchSummary.GroupWise";
 
 const clearData = async (req: Request, res: Response) => {
   try {
@@ -31,6 +32,29 @@ const showGroups = async (req: Request, res: Response) => {
       if (!userGroups || userGroups.length == 0)
         return res.json({ message: "No Groups yet, create or join one!" });
       else return res.json({ user: reqUser, groups: userGroups });
+    }
+  } catch (err) {
+    return res.json(err);
+  }
+};
+
+const getGroupExpenseSummary = async (req: Request, res: Response) => {
+  const reqUser = req.user as UserType;
+  const groupId = req.params.id;
+  try {
+    if (reqUser) {
+      const user = await User.findOne({ email: reqUser.email });
+      if (!user) return res.status(401).json({ error: "No such user" });
+
+      const userGroup = await Group.findById(
+        groupId,
+      );
+
+      if (!userGroup)
+        return res.json({ message: "No Groups yet, create or join one!" });
+
+      const expenseData = await fetchGroupWiseExpenseSummary(userGroup._id, user._id);
+      return res.json({expenseData, totalGroupSpend: userGroup.totalExpense});
     }
   } catch (err) {
     return res.json(err);
@@ -77,7 +101,7 @@ const editGroup = async (req: Request, res: Response) => {
     if (reqUser) {
       const user = await User.findOne({ email: reqUser.email });
       if (!user) return res.status(401).json({ error: "No such user" });
-      
+
       const foundGroup = await Group.findOne({ _id: groupId });
 
       if (!foundGroup)
@@ -93,7 +117,7 @@ const editGroup = async (req: Request, res: Response) => {
         { name, members },
         { new: true }
       );
-      
+
       return res.json(updatedGroup);
     }
     return res.json({ message: "No such user exists!" });
@@ -102,4 +126,4 @@ const editGroup = async (req: Request, res: Response) => {
   }
 };
 
-export { createGroup, showGroups, editGroup, clearData };
+export { createGroup, showGroups, editGroup, clearData, getGroupExpenseSummary };

@@ -8,9 +8,13 @@ const groupSchema = z.object({
     description: "Name of the group",
   }),
   createdBy: z.custom<Types.ObjectId>(),
+  createdAt: z.date({invalid_type_error: "Must be a datetime type object"}).optional(),
   members: z.array(z.custom<Types.ObjectId>()).nonempty({
     message: "Please add atleast one member!",
   }),
+  totalExpense: z.number({
+    invalid_type_error: "Must be a number",
+  }).default(0)
 });
 
 type GroupType = z.infer<typeof groupSchema>;

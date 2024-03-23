@@ -35,7 +35,6 @@ const getAllExpensesHandler = async (req: Request, res: Response) => {
       res.json({ error: "Please Login" });
     }
   } catch (err) {
-    
     return res.status(400).json(err);
   }
 };
@@ -109,6 +108,8 @@ const addExpenseHandler = async (
       .status(401)
       .json({ error: "Please check total split and participants." });
   try {
+    const createdAt = new Date();
+
     const parsedExpense = await expenseSchema.parseAsync({
       description,
       amount,
@@ -117,6 +118,7 @@ const addExpenseHandler = async (
       splitType,
       expenseType,
       createdBy,
+      createdAt,
       group,
     });
     const userId = parsedExpense["paidBy"];
@@ -125,13 +127,6 @@ const addExpenseHandler = async (
       if (!paidByUser) return res.status(404).json({ error: "Invalid User" });
 
       const newExpense = await createExpenseandUpdateBalance(parsedExpense);
-      // const expense = await Expense.create({
-      //   description,
-      //   amount,
-      //   paidBy: paidByUser,
-      //   participants: participantUserData,
-      //   splitType,
-      // });
       return res
         .status(200)
         .json({ message: "Expense Added Successfully", expense: newExpense });
@@ -140,11 +135,12 @@ const addExpenseHandler = async (
         return res
           .status(500)
           .json({ error: err.message, message: "Some Error occured" });
-      return res.status(500).json({ error: err, message: "Some Error occured" });
+      return res
+        .status(500)
+        .json({ error: err, message: "Some Error occured" });
     }
   } catch (err) {
     if (err instanceof ZodError) {
-      
       const errorMessage = err.errors.map((err) => err.message).join(", ");
       return res
         .status(401)
@@ -170,30 +166,33 @@ const getExpenseDetailsHandler = async (req: Request, res: Response) => {
   }
 };
 
+// When expense is updated - update expense, balance, debt based on group or individual
+// update group data as well totalExxpense
 const updateExpenseDetails = async (req: Request, res: Response) => {
-  const expense_id = req.params.id;
-  const { description, amount, paidBy, participants } = req.body;
+  return res.json({ error: "Module under development!" });
+  // const expense_id = req.params.id;
+  // const { description, amount, paidBy, participants } = req.body;
 
-  try {
-    const expenseData = {
-      description,
-      amount,
-      paidBy,
-      participants,
-    };
-    const expense = await Expense.findByIdAndUpdate(expense_id, expenseData, {
-      new: true,
-    });
-    if (!expense) return res.status(404).json({ error: "Invalid id" });
-    return res.status(200).json({ expense, message: "updated successfully" });
-  } catch (err) {
-    if (err instanceof MongooseError) {
-      const errorMessage = err;
-      return res.status(404).json({ error: "Invalid id" });
-    } else {
-      return res.status(404).json({ message: "Some Error Occured" });
-    }
-  }
+  // try {
+  //   const expenseData = {
+  //     description,
+  //     amount,
+  //     paidBy,
+  //     participants,
+  //   };
+  //   const expense = await Expense.findByIdAndUpdate(expense_id, expenseData, {
+  //     new: true,
+  //   });
+  //   if (!expense) return res.status(404).json({ error: "Invalid id" });
+  //   return res.status(200).json({ expense, message: "updated successfully" });
+  // } catch (err) {
+  //   if (err instanceof MongooseError) {
+  //     const errorMessage = err;
+  //     return res.status(404).json({ error: "Invalid id" });
+  //   } else {
+  //     return res.status(404).json({ message: "Some Error Occured" });
+  //   }
+  // }
 };
 
 const deleteExpense = async (req: Request, res: Response) => {

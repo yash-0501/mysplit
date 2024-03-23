@@ -13,7 +13,7 @@ const createExpenseandUpdateBalance = async (expense: ExpenseType) => {
     await newExpense.save({ session });
     const paidBy = expense.paidBy;
     const paidToData = expense.participants;
-    
+
     for await (const pData of paidToData) {
       const paidTo = pData.participant;
       const participantUser = await User.findById(paidTo);
@@ -22,17 +22,34 @@ const createExpenseandUpdateBalance = async (expense: ExpenseType) => {
       const group = newExpense.group;
       if (group) {
         const isValidGroup = await Group.findOne({
-          $and: [{ members: paidBy }, { members: paidTo }, {_id: group}],
-        });
-        
+          $and: [{ members: paidBy }, { members: paidTo }, { _id: group }],
+        }).session(session);
+
         if (!isValidGroup) throw new Error("Invalid Group Details");
       }
-      if(newExpense){
-        await addToBalance({ paidBy:paidBy, paidTo: paidTo, amount: amount, debtType: newExpense.expenseType || expenseTypes.individual, group: newExpense.group }, session);
-      }else{
-        throw new Error("Error saving expense!")
+      if (newExpense) {
+        await addToBalance(
+          {
+            paidBy: paidBy,
+            paidTo: paidTo,
+            amount: amount,
+            debtType: newExpense.expenseType || expenseTypes.individual,
+            group: newExpense.group,
+          },
+          session
+        );
+      } else {
+        throw new Error("Error saving expense!");
       }
     }
+
+    const updatedGroup = await Group.findByIdAndUpdate(
+      expense.group,
+      {
+        $inc: { totalExpense: expense.amount },
+      },
+      { new: true, session: session }
+    );
 
     await session.commitTransaction();
     session.endSession();
@@ -45,6 +62,6 @@ const createExpenseandUpdateBalance = async (expense: ExpenseType) => {
     // Handle rollback failure if necessary
     throw error;
   }
-}
+};
 
 export { createExpenseandUpdateBalance };

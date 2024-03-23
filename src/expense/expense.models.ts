@@ -30,7 +30,7 @@ const expenseSchema = new Schema<ExpenseType>({
     ref: "Group",
     required: false,
   },
-});
+}, {timestamps: true});
 
 const Expense = model("expense", expenseSchema);
 

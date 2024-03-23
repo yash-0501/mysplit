@@ -36,7 +36,7 @@ const expenseSchema = z.object({
     description: "Amount added by user",
   }),
   createdBy: z.custom<Schema.Types.ObjectId>(),
-  createdAt: z.date({invalid_type_error: "Must be a datetime type object"}).optional(),
+  createdAt: z.date({invalid_type_error: "Must be a datetime type object"}),
   paidBy: z.custom<Schema.Types.ObjectId>(),
   participants: participantSchema.array().nonempty({
     message: "Participants cant be empty",
