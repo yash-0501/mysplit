@@ -11,6 +11,7 @@ import { router as groupRouter } from "./group/group.routes";
 import { isLoggedIn } from "./auth/auth.middleware";
 import { showBalance } from "./balance/balance.controllers";
 var cookieParser = require("cookie-parser");
+const cors = require("cors");
 
 const uri =
   "mongodb+srv://yashagarwal:" +
@@ -18,6 +19,13 @@ const uri =
   "@mern-poc.rildjcz.mongodb.net/mysplit?retryWrites=true&w=majority";
 
 const app = express();
+
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+)
 
 app.use(bodyParser.json());
 app.use(cookieParser());

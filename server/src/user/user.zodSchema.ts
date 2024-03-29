@@ -27,7 +27,7 @@ const userSchema = z
     }),
   })
   .refine((data) => data.password === data.confirm, {
-    message: "Passwords don't match",
+    message: "Confirm Password and Password Should Match",
     path: ["confirm"],
   });
 

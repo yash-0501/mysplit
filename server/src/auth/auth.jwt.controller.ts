@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { User } from "../user/user.models";
-import { userSchema } from "../user/user.zodSchema";
+import { UserType, userSchema } from "../user/user.zodSchema";
 import { ZodError } from "zod";
 import jwt from "jsonwebtoken";
 import { z } from "zod";
@@ -14,7 +14,9 @@ const registerHandler = async (req: Request, res: Response) => {
     const user = req.body;
 
     // ** destructure the information from user;
-    const { name, email, password, confirm } = user;
+    const { name, email, password, confirm } = user as UserType;
+    if(name.length == 0)
+      return res.json({error:"Name is required"});
     try {
       const parsedUser = await userSchema.parseAsync({
         name,
@@ -31,9 +33,9 @@ const registerHandler = async (req: Request, res: Response) => {
 
     // ** Add a condition if the user exist we will send the response as email all ready exist
     if (isEmailAllReadyExist) {
-      res.status(400).json({
+      res.json({
         status: 400,
-        message: "Email all ready in use",
+        error: "Email all ready in use",
       });
       return;
     }
@@ -54,7 +56,7 @@ const registerHandler = async (req: Request, res: Response) => {
     //   user: newUser
     // })
     // Send the newUser as  response;
-    return res.status(200).json({
+    return res.json({
       status: 201,
       success: true,
       message: " User created Successfully",
@@ -65,10 +67,10 @@ const registerHandler = async (req: Request, res: Response) => {
         // console.log(err);
         const errorMessage = err.errors.map((err) => err.message).join(", ");
         return res
-          .status(404)
+          
           .json({ error: errorMessage, message: "Some error occurred" });
       } else
-        return res.status(404).json({ message: "Some Error Occured", err });
+        return res.json({ message: "Some Error Occured", error: err });
     }
 };
 
@@ -82,17 +84,17 @@ const loginHandler = async (req: Request, res: Response) => {
 
     const isEmail = validator.validate(email);
     if (!email || !isEmail)
-      return res.status(404).json({
-        status: 404,
+      return res.json({
+        status: 401,
         success: false,
-        message: "Enter a valid email",
+        error: "Enter a valid email",
       });
 
     if (!password)
-      return res.status(404).json({
-        status: 404,
+      return res.json({
+        status: 401,
         success: false,
-        message: "Enter a password",
+        error: "Enter a password",
       });
 
     // ** Check the (email/user) exist  in database or not ;
@@ -102,10 +104,10 @@ const loginHandler = async (req: Request, res: Response) => {
 
     // ** if there is not any user we will send user not found;
     if (!isUserExist) {
-      return res.status(404).json({
-        status: 404,
+      return res.json({
+        status: 401,
         success: false,
-        message: "Invalid Credentials!",
+        error: "Invalid Credentials!",
       });
     }
 
@@ -118,10 +120,10 @@ const loginHandler = async (req: Request, res: Response) => {
     // ** if not matched send response that wrong password;
 
     if (!isPasswordMatched) {
-      return res.status(400).json({
+      return res.json({
         status: 400,
         success: false,
-        message: "wrong password",
+        error: "Wrong Password",
       });
     }
 
@@ -155,7 +157,7 @@ const loginHandler = async (req: Request, res: Response) => {
     });
 
     // send the response
-    res.status(200).json({
+    res.json({
       status: 200,
       success: true,
       message: "login success",
@@ -163,7 +165,7 @@ const loginHandler = async (req: Request, res: Response) => {
     });
   } catch (error: any) {
     // Send the error message to the client
-    res.status(400).json({
+    res.json({
       status: 400,
       message: error.message.toString(),
     });

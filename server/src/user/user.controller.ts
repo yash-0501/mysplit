@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { User } from "../user/user.models";
+import { UserType } from "./user.zodSchema";
 
 const handleCreateUser = async (req: Request, res: Response) => {
   try {
@@ -17,4 +18,14 @@ const listAllUsers = async (req: Request, res: Response) => {
   return res.json(allUsers);
 };
 
-export { handleCreateUser, listAllUsers };
+const listCurrentUser = async (req: Request, res: Response) => {
+  const user = req.user as UserType
+  
+  if(!user)
+  return res.json({ error: "Please Login" });
+  const currUser = await User.findOne({email:user.email});
+  if (!currUser) return res.json({ error: "Please Login" });
+  return res.json({email:currUser.email, name: currUser.name});
+};
+
+export { handleCreateUser, listAllUsers, listCurrentUser };

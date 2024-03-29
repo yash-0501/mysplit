@@ -54,6 +54,7 @@ const addExpenseHandler = async (
   req: Request<ExpenseRequestBody>,
   res: Response
 ) => {
+  console.log("NEW!")
   const {
     description,
     amount,
