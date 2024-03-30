@@ -13,7 +13,7 @@ enum splitTypes {
 
 enum expenseTypes {
   individual = "INDIVIDUAL",
-  group = "GROUP"
+  group = "GROUP",
 }
 
 const participantSchema = z.object({
@@ -36,13 +36,21 @@ const expenseSchema = z.object({
     description: "Amount added by user",
   }),
   createdBy: z.custom<Schema.Types.ObjectId>(),
-  createdAt: z.date({invalid_type_error: "Must be a datetime type object"}),
+  createdAt: z.date({ invalid_type_error: "Must be a datetime type object" }),
   paidBy: z.custom<Schema.Types.ObjectId>(),
   participants: participantSchema.array().nonempty({
     message: "Participants cant be empty",
   }),
-  splitType: z.nativeEnum(splitTypes).readonly().default(splitTypes.equal).optional(),
-  expenseType: z.nativeEnum(expenseTypes).readonly().default(expenseTypes.individual).optional(),
+  splitType: z
+    .nativeEnum(splitTypes)
+    .readonly()
+    .default(splitTypes.equal)
+    .optional(),
+  expenseType: z
+    .nativeEnum(expenseTypes)
+    .readonly()
+    .default(expenseTypes.individual)
+    .optional(),
   group: z.custom<Schema.Types.ObjectId>().optional(),
 });
 
@@ -59,5 +67,5 @@ export {
   participantSchema,
   ObjectIdType,
   splitTypes,
-  expenseTypes
+  expenseTypes,
 };

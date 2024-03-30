@@ -1,6 +1,11 @@
 import { Request, Response } from "express";
-import { expenseSchema, expenseTypes, splitTypes } from "./expense.zodSchema";
-import { ZodError } from "zod";
+import {
+  ExpenseType,
+  expenseSchema,
+  expenseTypes,
+  splitTypes,
+} from "./expense.zodSchema";
+import { Schema, ZodError } from "zod";
 import { Expense } from "./expense.models";
 import { MongooseError, ObjectId, startSession } from "mongoose";
 import { User } from "../user/user.models";
@@ -11,6 +16,7 @@ import { fetchUnequalSplit } from "./service/split.unequal";
 import { isValidSplit } from "./service/split.isValid";
 import { UserType } from "../user/user.zodSchema";
 import { createExpenseandUpdateBalance } from "./expense.create";
+import { getExpenseSummary } from "./service/fetchExpenseSummary";
 
 const getAllExpensesHandler = async (req: Request, res: Response) => {
   try {
@@ -18,6 +24,7 @@ const getAllExpensesHandler = async (req: Request, res: Response) => {
       const reqUser = req.user as UserType;
       const user = await User.findOne({ email: reqUser.email });
       if (!user) return res.status(401).json({ error: "No such user" });
+
       const expenses = await Expense.find({
         $or: [
           { createdBy: user },
@@ -26,11 +33,13 @@ const getAllExpensesHandler = async (req: Request, res: Response) => {
         ],
       })
         .sort({ _id: -1 })
-        .populate("participants.participant", "email")
-        .populate("paidBy", "email")
-        .populate("createdBy", "email")
+        .populate("participants.participant")
+        .populate("paidBy")
+        .populate("createdBy")
         .populate("group");
-      return res.json({ expenses, user: req.user });
+
+      const response = await getExpenseSummary(expenses, user._id);
+      return res.json({ expenses: response });
     } else {
       res.json({ error: "Please Login" });
     }
@@ -54,7 +63,6 @@ const addExpenseHandler = async (
   req: Request<ExpenseRequestBody>,
   res: Response
 ) => {
-  console.log("NEW!")
   const {
     description,
     amount,

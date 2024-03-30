@@ -20,11 +20,11 @@ export const fetchShareSplit = (
 
   for (let i = 0; i < shares.length; i++) totalShares += shares[i];
   let totalAmount = 0;
-  const amt = (amount / totalShares);
+  const amt = amount / totalShares;
 
   for (let i = 0; i < participants.length; i++) {
     if (
-      totalAmount + (amt * shares[i]) != amount &&
+      totalAmount + amt * shares[i] != amount &&
       i == participants.length - 1
     ) {
       splitByParticipants.push({
@@ -39,7 +39,6 @@ export const fetchShareSplit = (
     }
     totalAmount += parseFloat((amt * shares[i]).toFixed(2));
     totalAmount = parseFloat(totalAmount.toFixed(2));
-
   }
 
   return splitByParticipants;

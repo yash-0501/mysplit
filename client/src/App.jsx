@@ -9,6 +9,7 @@ import axios from 'axios';
 import { Toaster } from "react-hot-toast";
 import { UserContextProvider } from '../context/userContext';
 import PrivateRoute from './components/PrivateRoute';
+import { CssBaseline } from '@mui/material';
 
 
 axios.defaults.baseURL = 'http://localhost:3000';
@@ -20,6 +21,7 @@ function App() {
   return (
     <UserContextProvider>
     <Toaster position='bottom-right' toastOptions={{duration:2000}}></Toaster>
+    <CssBaseline />
     <Routes>
       <Route path='/login' element={<SignIn />} />
       <Route path='/register' element={<SignUp />} />

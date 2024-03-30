@@ -14,8 +14,7 @@ import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import { Badge } from '@mui/material';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import { useContext } from 'react';
-import UserContext from '../../../context/userContext';
+
 
 const pages = ['Products', 'Pricing', 'Blog'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
@@ -23,8 +22,7 @@ const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 function Header({props}) {
 
   const user = props;
-  console.log(user);
-
+  
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
@@ -170,13 +168,17 @@ function Header({props}) {
               <Badge badgeContent={1} color="error">
               <Typography textAlign="center">Notifications</Typography>
               </Badge>
-              
               </MenuItem>
+
+              
+
               {settings.map((setting) => (
                 <MenuItem key={setting} onClick={handleCloseUserMenu}>
                   <Typography textAlign="center">{setting}</Typography>
                 </MenuItem>
               ))}
+
+                
               
             </Menu>
           </Box>

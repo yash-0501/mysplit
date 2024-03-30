@@ -2,6 +2,9 @@ import { useContext, useEffect, useState } from "react";
 import UseAuth from "../../hooks/useAuth";
 import UserContext from "../../../context/userContext";
 import Header from "../../components/header/header";
+import ActivityBar from "../../components/activityBar/ActivityBar";
+import LandingContent from "../../components/LandingContent/LandingContent";
+import { Box } from "@mui/material";
 
 const LandingPage = () =>{
     
@@ -11,9 +14,13 @@ const LandingPage = () =>{
     return (
         <>
             <Header props={user} />
-            <h1>Landing Page</h1>
-            {!!user && (<h2>Hi {user.name}!</h2>)}
-            {!!user && (<p>Logged In as: {user.email}</p>)}
+            <Box sx={{width:'100vw', display: 'flex'}}>
+            <LandingContent props={user} />
+            <ActivityBar props={user} />
+            </Box>
+            
+            
+            
         </>
     )
 }
