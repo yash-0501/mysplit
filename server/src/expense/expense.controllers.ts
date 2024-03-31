@@ -37,7 +37,6 @@ const getAllExpensesHandler = async (req: Request, res: Response) => {
         .populate("paidBy")
         .populate("createdBy")
         .populate("group");
-
       const response = await getExpenseSummary(expenses, user._id);
       return res.json({ expenses: response });
     } else {
@@ -162,7 +161,11 @@ const getExpenseDetailsHandler = async (req: Request, res: Response) => {
   const expense_id = req.params.id;
 
   try {
-    const expense = await Expense.findById(expense_id);
+    const expense = await Expense.findById(expense_id)
+    .populate("participants.participant")
+        .populate("paidBy")
+        .populate("createdBy")
+        .populate("group");
     if (!expense) return res.status(404).json({ error: "Invalid id" });
     return res.status(200).json(expense);
   } catch (err) {

@@ -10,6 +10,7 @@ import { Toaster } from "react-hot-toast";
 import { UserContextProvider } from '../context/userContext';
 import PrivateRoute from './components/PrivateRoute';
 import { CssBaseline } from '@mui/material';
+import ExpenseInfo from './pages/expense/expenseInfo';
 
 
 axios.defaults.baseURL = 'http://localhost:3000';
@@ -26,7 +27,8 @@ function App() {
       <Route path='/login' element={<SignIn />} />
       <Route path='/register' element={<SignUp />} />
       <Route element={<PrivateRoute />}>
-      <Route path='/' element={<LandingPage />} />
+        <Route path='/' element={<LandingPage />} />
+        <Route path='expenses/:id' element={<ExpenseInfo />} />
       </Route>
         
       

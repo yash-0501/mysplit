@@ -51,7 +51,7 @@ function Header({props}) {
     logoutUser();
     toast.success("Logged Out Successfully!")
     setUser(null);
-    navigate("/", { replace: true });
+    navigate("/login", { replace: true });
   }
 
   return (

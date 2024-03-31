@@ -11,19 +11,23 @@ import { useContext } from 'react';
 import UserContext from '../../../context/userContext';
 import axios from 'axios';
 import fetchExpenses from '../../utils/activity.util';
-import { Box, Button, Divider, Paper, Typography } from '@mui/material';
+import { Box, Button, Divider, Paper, Typography, Link } from '@mui/material';
+// import { Link } from 'react-router-dom';
 
 
 
 
 export default function ActivityList({props}) {
     console.log(props);
-    const {user} = useContext(UserContext);
+    const user = props.user;
     const expenses = props.expenses
+    console.log(expenses)
 
     const myActivity = (
         <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
             {expenses.map((expense, index)=>(
+                <Link href={`expenses/${expense._id}`} key={expense._id} sx={{textDecoration: 'none'}}>
+                
                 <ListItem alignItems="flex-start" key={expense.createdAt}>
                 <ListItemAvatar>
                     <Avatar alt={expense.paidBy.name} src="/static/images/avatar/1.jpg" />
@@ -45,7 +49,7 @@ export default function ActivityList({props}) {
                         
                     </React.Fragment>} />
             </ListItem>
-
+            </Link>
             ))}
         </List>
     )

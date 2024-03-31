@@ -8,14 +8,16 @@ export function UserContextProvider({children}) {
     const [isLoading, setIsLoading] = useState(true);
     useEffect(()=>{
             axios.get("users/profile").then(({data})=>{
-                console.log(data);
-                setUser(data);
-                
                 if(data.error){ 
-                    console.log("Something missing");
                     setUser(null);
                     setIsLoading(false);
+                    console.log("Something missing here");
+                }else{
+                    console.log(data);
+                    setUser(data);
+                    setIsLoading(false);
                 }
+                
             }).catch(err=>{
                 console.log("Something missing", err);
                     setUser(null);

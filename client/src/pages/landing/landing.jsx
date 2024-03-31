@@ -17,12 +17,16 @@ const LandingPage = () =>{
     const [expenses, setExpenses] = useState([]);
     const [balance, setBalance] = useState([]);
     const [balanceDetails, setBalanceDetails] = useState(null);
+    const [currUser, setCurrUser] = useState(null);
+
+    
     
 
     useEffect(() => {
         fetchExpenses(setExpenses);
         fetchBalance(setBalance);
         fetchBalanceSummary(setBalanceDetails);
+        setCurrUser(user);
       }, []);
    
     return (
@@ -30,8 +34,8 @@ const LandingPage = () =>{
         <Header props={user} />
         <Container>
             <Box sx={{width:'100%', display: 'flex'}}>
-            <Dashboard props={{user, balance, balanceDetails}} />
-            <ActivityBar props={{user, expenses}} />
+            <Dashboard props={{user: {...currUser}, balance, balanceDetails}} />
+            <ActivityBar props={{user: {...currUser}, expenses}} />
             </Box>
             
             
