@@ -9,7 +9,7 @@ import { router as authRouter } from "./auth/auth.routes";
 import { router as userRouter } from "./user/user.router";
 import { router as groupRouter } from "./group/group.routes";
 import { isLoggedIn } from "./auth/auth.middleware";
-import { showBalance } from "./balance/balance.controllers";
+import { router as balanceRouter } from "./balance/balance.router";
 var cookieParser = require("cookie-parser");
 const cors = require("cors");
 
@@ -56,7 +56,7 @@ export const isAuthenticated = (
 app.use("/expenses", isLoggedIn, expenseRouter);
 app.use("/auth", authRouter);
 app.use("/users", userRouter);
-app.use("/balance", isLoggedIn, showBalance);
+app.use("/balance", isLoggedIn, balanceRouter);
 app.use("/groups", isLoggedIn, groupRouter);
 
 connectMongoDb(uri)

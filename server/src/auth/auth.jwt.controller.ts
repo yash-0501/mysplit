@@ -59,7 +59,7 @@ const registerHandler = async (req: Request, res: Response) => {
     return res.json({
       status: 201,
       success: true,
-      message: " User created Successfully",
+      message: "Account Created! \n Please Login!",
     });
 
     } catch (err) {
@@ -70,7 +70,7 @@ const registerHandler = async (req: Request, res: Response) => {
           
           .json({ error: errorMessage, message: "Some error occurred" });
       } else
-        return res.json({ message: "Some Error Occured", error: err });
+        return res.json({ error: "Some Error Occured", err });
     }
 };
 
@@ -157,19 +157,25 @@ const loginHandler = async (req: Request, res: Response) => {
     });
 
     // send the response
-    res.json({
+    return res.json({
       status: 200,
       success: true,
-      message: "login success",
+      message: "Logged In Successfully!",
       token: token,
     });
   } catch (error: any) {
     // Send the error message to the client
-    res.json({
+    return res.json({
       status: 400,
       message: error.message.toString(),
     });
   }
 };
 
-export { registerHandler, loginHandler };
+const logoutHandler = (req: Request, res: Response) =>{
+  res.clearCookie('jwt');
+  // Redirect to the home page or any other desired location
+  return res.json({message:"Logged Out Successfuly"})
+}
+
+export { registerHandler, loginHandler, logoutHandler };

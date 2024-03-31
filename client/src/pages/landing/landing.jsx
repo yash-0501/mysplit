@@ -4,7 +4,7 @@ import UserContext from "../../../context/userContext";
 import Header from "../../components/header/header";
 import ActivityBar from "../../components/activityBar/ActivityBar";
 import LandingContent from "../../components/LandingContent/LandingContent";
-import { Box } from "@mui/material";
+import { Box, Container } from "@mui/material";
 
 const LandingPage = () =>{
     
@@ -13,14 +13,16 @@ const LandingPage = () =>{
    
     return (
         <>
-            <Header props={user} />
-            <Box sx={{width:'100vw', display: 'flex'}}>
+        <Header props={user} />
+        <Container>
+            <Box sx={{width:'100%', display: 'flex'}}>
             <LandingContent props={user} />
             <ActivityBar props={user} />
             </Box>
             
             
             
+        </Container>
         </>
     )
 }

@@ -14,6 +14,11 @@ import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import { Badge } from '@mui/material';
 import NotificationsIcon from '@mui/icons-material/Notifications';
+import logoutUser from '../../utils/logout.util';
+import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
+import { useContext } from 'react';
+import UserContext from '../../../context/userContext';
 
 
 const pages = ['Products', 'Pricing', 'Blog'];
@@ -22,7 +27,8 @@ const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 function Header({props}) {
 
   const user = props;
-  
+  const {setUser} = useContext(UserContext);
+  const navigate = useNavigate();
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
@@ -40,6 +46,13 @@ function Header({props}) {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
+
+  const handleLogout = () => {
+    logoutUser();
+    toast.success("Logged Out Successfully!")
+    setUser(null);
+    navigate("/", { replace: true });
+  }
 
   return (
     <AppBar position="static">
@@ -174,7 +187,7 @@ function Header({props}) {
 
               {settings.map((setting) => (
                 <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
+                  <Typography textAlign="center" variant='button' onClick={handleLogout}>{setting}</Typography>
                 </MenuItem>
               ))}
 
