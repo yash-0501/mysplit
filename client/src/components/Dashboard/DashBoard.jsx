@@ -1,16 +1,13 @@
 import { Box, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import fetchBalanceSummary from "../../utils/balanceSummary.util";
+import Debts from "./Debts";
 
-const LandingContent = ({props}) => {
+const Dashboard = ({props}) => {
 
-    const user = props;
-
-    const [balanceDetails, setBalanceDetails] = useState(null);
-
-    useEffect(()=>{
-        fetchBalanceSummary(setBalanceDetails);
-    }, []);
+    const user = props.user;
+    const balance = props.balance;
+    const balanceDetails = props.balanceDetails;
 
     console.log(balanceDetails)
 
@@ -21,21 +18,21 @@ const LandingContent = ({props}) => {
                 xs: '100%',
                 md: '75%',
             },
-            background: 'red',
-            display: 'block'
+            display: 'block',
+            padding: {md:'15px', xs:'7.5px'},
         }}>
-            <Typography variant="h1">Landing Page</Typography>
             {!!user && (<Typography variant="h5">Hi {user.name}!</Typography>)}
             {!!user && (<Typography>Logged In as: {user.email}</Typography>)}
 
-            {!!user && !!balanceDetails && (<Typography>
+            {!!user && !!balanceDetails && (<Typography> Total 
                 {
-                balanceDetails.totalBalance > 0 ? "You get back " + balanceDetails.totalBalance : 
-                "You owe " + (-(balanceDetails.totalBalance))
+                balanceDetails.totalBalance > 0 ? " You get back " + balanceDetails.totalBalance : 
+                " You owe " + (-(balanceDetails.totalBalance))
                 }
             </Typography>)}
+            {!!balance && <Debts props={balance} />}
         </Box>
     )
 }
 
-export default LandingContent;
+export default Dashboard;

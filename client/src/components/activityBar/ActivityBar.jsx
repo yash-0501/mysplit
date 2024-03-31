@@ -1,9 +1,9 @@
-import { Box } from "@mui/material";
+import { Box, useThemeProps } from "@mui/material";
 import ActivityList from './ActivityList';
 
 const drawerWidth = 240
 
-const ActivityBar = () => {
+const ActivityBar = ({props}) => {
     return (
 
 
@@ -20,7 +20,7 @@ const ActivityBar = () => {
     height: '90vh',
   }}
 >
-  <ActivityList />
+  <ActivityList props={props} />
 </Box>
 
     )

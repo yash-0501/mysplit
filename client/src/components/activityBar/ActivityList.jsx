@@ -11,38 +11,17 @@ import { useContext } from 'react';
 import UserContext from '../../../context/userContext';
 import axios from 'axios';
 import fetchExpenses from '../../utils/activity.util';
-import { Box, Divider, Paper, Typography } from '@mui/material';
+import { Box, Button, Divider, Paper, Typography } from '@mui/material';
 
 
 
 
-export default function ActivityList() {
-
+export default function ActivityList({props}) {
+    console.log(props);
     const {user} = useContext(UserContext);
-    console.log(user,"user");
-    const [expenses, setExpenses] = useState([]);
-
-    useEffect(() => {
-        fetchExpenses(setExpenses);
-      }, []);
-    console.log(expenses,"expenses");
+    const expenses = props.expenses
 
     const myActivity = (
-        <Box sx={{ height: '100%', overflowY: 'auto', scrollBehavior: 'smooth' ,width: '100%', bgcolor: 'background.paper' }}>
-            <Paper elevation={10} sx={{
-                backgroundColor: '#f0f0f0',
-                borderRadius: '2px',
-                height: '50px',
-                textAlign: 'center',
-                display: 'flex',
-                alignItems: 'center', // Vertically center the content
-                justifyContent: 'center', // Horizontally center the content
-                position: 'sticky',
-                top: 0,
-                zIndex: 1 // Ensure it appears above other content
-            }} >
-  <Typography>Your Activity</Typography>
-    </Paper>
         <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
             {expenses.map((expense, index)=>(
                 <ListItem alignItems="flex-start" key={expense.createdAt}>
@@ -68,25 +47,53 @@ export default function ActivityList() {
             </ListItem>
 
             ))}
-        
-        </List>    
-        </Box>
+        </List>
     )
     const noActivity = (
-        <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
-        <ListItem alignItems="flex-start">
-            <ListItemText
-                primary="No Activity!"
-                ></ListItemText>
-                
-        </ListItem>
-        <Divider component="li" />
-        </List>    
+        <Box sx={{
+            height: 'calc(100% - 50px)',
+            py: '20px',
+            mx:'5%'
+        }}>
+            <Typography variant='h4'>
+                No Activty!
+            </Typography>
+            <Divider />
+
+            <Box sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                height: 'calc(100% - 50px)',
+                alignItems: 'center',
+                mx: '5%'
+            }}>
+                <Button variant='contained' color='success' size='large' disableRipple >How About you Add Expenses?</Button>
+            </Box>
+           
+            </Box>
+        
+        
+        
     )
     
     return (
-        <>
-        {expenses.length > 0 ? <> {myActivity} </> : <> {noActivity} </>}
-        </>
+        <Box sx={{ height: '100%', overflowY: 'auto', scrollBehavior: 'smooth' ,width: '100%', bgcolor: 'background.paper' }}>
+            <Paper elevation={10} sx={{
+                backgroundColor: '#f0f0f0',
+                borderRadius: '2px',
+                height: '50px',
+                textAlign: 'center',
+                display: 'flex',
+                alignItems: 'center', // Vertically center the content
+                justifyContent: 'center', // Horizontally center the content
+                position: 'sticky',
+                top: 0,
+                zIndex: 1 // Ensure it appears above other content
+            }} >
+  <Typography>Your Activity</Typography>
+    </Paper>
+        
+        {expenses.length > 0 ? <> {myActivity} </> : <> {noActivity} </>}   
+        </Box>
     );
 }
