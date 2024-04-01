@@ -28,6 +28,7 @@ const getExpenseSummary = async (
       splitType: expense.splitType,
       expenseType: expense.expenseType,
       group: expense.group,
+      expenseDate: expense.expenseDate,
     };
     res.push({ ...resData, yourShare: userShare });
   }

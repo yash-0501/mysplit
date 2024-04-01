@@ -11,7 +11,8 @@ import { fetchGroupWiseExpenseSummary } from "../expense/service/fetchSummary.Gr
 const clearData = async (req: Request, res: Response) => {
   try {
     await Expense.deleteMany({});
-    await Group.deleteMany({});
+    // await Group.deleteMany({});
+    // await User.deleteMany({});
     await Debt.deleteMany({});
     await Balance.deleteMany({});
     return res.json({ message: "Deleted Successfully!" });
@@ -93,6 +94,30 @@ const createGroup = async (req: Request, res: Response) => {
   }
 };
 
+const getGroupDetail = async(req:Request, res: Response) => {
+  const reqUser = req.user as UserType;
+  const groupId = req.params.id;
+
+  try {
+    if (reqUser) {
+      const user = await User.findOne({ email: reqUser.email });
+      if (!user) return res.status(401).json({ error: "No such user" });
+
+      const foundGroup = await Group.findOne({ _id: groupId })
+      .populate("members", "email")
+      .populate("createdBy");
+
+      if (!foundGroup)
+        return res.json({ error: "No Groups yet, create or join one!" });
+      
+      return res.json(foundGroup);
+    }
+    return res.json({ error: "No such user exists!" });
+  } catch (err) {
+    return res.json({error:err});
+  }
+}
+
 const editGroup = async (req: Request, res: Response) => {
   const reqUser = req.user as UserType;
   const groupId = req.params.id;
@@ -126,4 +151,4 @@ const editGroup = async (req: Request, res: Response) => {
   }
 };
 
-export { createGroup, showGroups, editGroup, clearData, getGroupExpenseSummary };
+export { createGroup, showGroups, editGroup, clearData, getGroupExpenseSummary, getGroupDetail };

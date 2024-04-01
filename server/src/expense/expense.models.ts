@@ -7,6 +7,7 @@ const expenseSchema = new Schema<ExpenseType>(
     amount: { type: Number, required: true },
     createdBy: { type: Schema.Types.ObjectId, ref: "User", required: true },
     createdAt: { type: Date, default: Date.now() },
+    expenseDate: { type: Date, default: Date.now() },
     paidBy: { type: Schema.Types.ObjectId, ref: "User", required: true },
     participants: [
       {

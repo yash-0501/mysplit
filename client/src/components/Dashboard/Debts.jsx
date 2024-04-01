@@ -24,7 +24,7 @@ const Debts = ({props}) =>{
     console.log(getBacks);
     
     const debtsTable = (
-        <Paper sx={{ p: 2, height: '100%' }} >
+        <Paper sx={{ p: 2 }} >
         <Grid container spacing={2} >
           <Grid item xs={12} md={6}>
             <Typography variant="h5" sx={{fontWeight: '600', color: 'grey'}} >You Owe</Typography>

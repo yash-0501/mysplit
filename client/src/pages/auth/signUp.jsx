@@ -112,7 +112,6 @@ export default function SignUp() {
                 name="email"
                 type="email"
                 autoComplete="email"
-                autoFocus
                 value={data.email}
                 onChange={(e)=>setData({...data, email:e.target.value})}
               />
