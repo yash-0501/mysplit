@@ -14,9 +14,11 @@ const handleCreateUser = async (req: Request, res: Response) => {
 
 const listAllUsers = async (req: Request, res: Response) => {
   const currUser = req.user as UserType;
-  const allUsers = await User.find({}).sort({name:1});
+  const allUsers = await User.find({}, "_id email name").sort({ name: 1 });
   if (allUsers.length < 1) return res.json({ error: "No user found" });
-  const currentUserIndex = allUsers.findIndex(user => user.email === currUser.email);
+  const currentUserIndex = allUsers.findIndex(
+    (user) => user.email === currUser.email
+  );
   if (currentUserIndex === -1) {
     return res.status(404).json({ error: "Current user not found" });
   }
@@ -27,13 +29,12 @@ const listAllUsers = async (req: Request, res: Response) => {
 };
 
 const listCurrentUser = async (req: Request, res: Response) => {
-  const user = req.user as UserType
-  
-  if(!user)
-  return res.json({ error: "Please Login" });
-  const currUser = await User.findOne({email:user.email});
+  const user = req.user as UserType;
+
+  if (!user) return res.json({ error: "Please Login" });
+  const currUser = await User.findOne({ email: user.email });
   if (!currUser) return res.json({ error: "Please Login" });
-  return res.json({email:currUser.email, name: currUser.name});
+  return res.json({ email: currUser.email, name: currUser.name });
 };
 
 export { handleCreateUser, listAllUsers, listCurrentUser };

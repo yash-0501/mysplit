@@ -1,13 +1,13 @@
-import * as React from 'react';
-import Chip from '@mui/material/Chip';
-import TextField from '@mui/material/TextField';
-import Autocomplete from '@mui/material/Autocomplete';
+import * as React from "react";
+import Chip from "@mui/material/Chip";
+import TextField from "@mui/material/TextField";
+import Autocomplete from "@mui/material/Autocomplete";
 
-export default function SearchParticipants({props}) {
-
-    const participants = props.allUsers;
-    const currUser = props.user;
-    
+export default function SearchParticipants({ props }) {
+  const participants = props.allUsers;
+  const currUser = props.user;
+  const setExpenseFormData = props.setExpenseFormData;
+  const expenseFormData = props.expenseFormData;
 
   const fixedOptions = [participants[0]];
   const [value, setValue] = React.useState([...fixedOptions]);
@@ -15,6 +15,7 @@ export default function SearchParticipants({props}) {
   return (
     <Autocomplete
       multiple
+      limitTags={2}
       id="fixed-tags-demo"
       value={value}
       onChange={(event, newValue) => {
@@ -22,6 +23,7 @@ export default function SearchParticipants({props}) {
           ...fixedOptions,
           ...newValue.filter((option) => fixedOptions.indexOf(option) === -1),
         ]);
+        setExpenseFormData({ ...expenseFormData, participants: [...newValue] });
       }}
       options={participants}
       getOptionLabel={(option) => option.name}
@@ -34,9 +36,13 @@ export default function SearchParticipants({props}) {
           />
         ))
       }
-      style={{ width: 500 }}
       renderInput={(params) => (
-        <TextField {...params} label="Split Between" placeholder="Favorites" />
+        <TextField
+          required={value.length < 2}
+          {...params}
+          label="Split Between"
+          placeholder="Favorites"
+        />
       )}
     />
   );

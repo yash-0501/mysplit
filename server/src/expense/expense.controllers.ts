@@ -48,7 +48,7 @@ const getAllExpensesHandler = async (req: Request, res: Response) => {
 };
 
 interface ExpenseRequestBody {
-  expenseDate: Date,
+  expenseDate: Date;
   description: string;
   amount: number;
   paidBy: string;
@@ -121,7 +121,7 @@ const addExpenseHandler = async (
     const createdAt = new Date();
     const expenseDateObj = new Date(expenseDate);
     const parsedExpense = await expenseSchema.parseAsync({
-      expenseDate:expenseDateObj,
+      expenseDate: expenseDateObj,
       description,
       amount,
       paidBy,
@@ -165,10 +165,10 @@ const getExpenseDetailsHandler = async (req: Request, res: Response) => {
 
   try {
     const expense = await Expense.findById(expense_id)
-    .populate("participants.participant")
-        .populate("paidBy")
-        .populate("createdBy")
-        .populate("group");
+      .populate("participants.participant")
+      .populate("paidBy")
+      .populate("createdBy")
+      .populate("group");
     if (!expense) return res.status(404).json({ error: "Invalid id" });
     return res.status(200).json(expense);
   } catch (err) {

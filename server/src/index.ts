@@ -25,7 +25,7 @@ app.use(
     origin: "http://localhost:5173",
     credentials: true,
   })
-)
+);
 
 app.use(bodyParser.json());
 app.use(cookieParser());
@@ -55,7 +55,7 @@ export const isAuthenticated = (
 
 app.use("/expenses", isLoggedIn, expenseRouter);
 app.use("/auth", authRouter);
-app.use("/users", isLoggedIn ,userRouter);
+app.use("/users", isLoggedIn, userRouter);
 app.use("/balance", isLoggedIn, balanceRouter);
 app.use("/groups", isLoggedIn, groupRouter);
 

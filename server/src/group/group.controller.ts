@@ -47,15 +47,16 @@ const getGroupExpenseSummary = async (req: Request, res: Response) => {
       const user = await User.findOne({ email: reqUser.email });
       if (!user) return res.status(401).json({ error: "No such user" });
 
-      const userGroup = await Group.findById(
-        groupId,
-      );
+      const userGroup = await Group.findById(groupId);
 
       if (!userGroup)
         return res.json({ message: "No Groups yet, create or join one!" });
 
-      const expenseData = await fetchGroupWiseExpenseSummary(userGroup._id, user._id);
-      return res.json({expenseData, totalGroupSpend: userGroup.totalExpense});
+      const expenseData = await fetchGroupWiseExpenseSummary(
+        userGroup._id,
+        user._id
+      );
+      return res.json({ expenseData, totalGroupSpend: userGroup.totalExpense });
     }
   } catch (err) {
     return res.json(err);
@@ -94,7 +95,7 @@ const createGroup = async (req: Request, res: Response) => {
   }
 };
 
-const getGroupDetail = async(req:Request, res: Response) => {
+const getGroupDetail = async (req: Request, res: Response) => {
   const reqUser = req.user as UserType;
   const groupId = req.params.id;
 
@@ -104,19 +105,19 @@ const getGroupDetail = async(req:Request, res: Response) => {
       if (!user) return res.status(401).json({ error: "No such user" });
 
       const foundGroup = await Group.findOne({ _id: groupId })
-      .populate("members", "email")
-      .populate("createdBy");
+        .populate("members", "email")
+        .populate("createdBy");
 
       if (!foundGroup)
         return res.json({ error: "No Groups yet, create or join one!" });
-      
+
       return res.json(foundGroup);
     }
     return res.json({ error: "No such user exists!" });
   } catch (err) {
-    return res.json({error:err});
+    return res.json({ error: err });
   }
-}
+};
 
 const editGroup = async (req: Request, res: Response) => {
   const reqUser = req.user as UserType;
@@ -151,4 +152,11 @@ const editGroup = async (req: Request, res: Response) => {
   }
 };
 
-export { createGroup, showGroups, editGroup, clearData, getGroupExpenseSummary, getGroupDetail };
+export {
+  createGroup,
+  showGroups,
+  editGroup,
+  clearData,
+  getGroupExpenseSummary,
+  getGroupDetail,
+};

@@ -32,7 +32,7 @@ function stringToColor(string) {
 function stringAvatar(name) {
   name = name.toUpperCase();
   let flag = true;
-  console.log(name.split(" "));
+
   if (name.split(" ").length < 2) flag = false;
   return {
     sx: {
@@ -44,51 +44,42 @@ function stringAvatar(name) {
   };
 }
 
-const SelectGroup = ({ props }) => {
-  const [selectedItem, setSelectedItem] = useState(null);
+const SelectPaidBy = ({ props }) => {
+  const setExpenseFormData = props.setExpenseFormData;
+  const expenseFormData = props.expenseFormData;
 
-  const allGroups = props.allGroups;
-  console.log(allGroups);
+  const [selectedItem, setSelectedItem] = useState(expenseFormData.paidBy);
 
-  const handleGroupUpdate = (group) => {
-    if (group === null) alert("No group expense!");
-    setSelectedItem(group);
-    alert(group.name);
+  const allParticipants = props.expenseFormData.participants;
+
+  const handleClose = props.handleClose;
+
+  const handlePaidByUpdate = (participant) => {
+    if (participant === null) alert("No participant selected!");
+    setSelectedItem(participant);
+    setExpenseFormData({ ...expenseFormData, paidBy: participant });
+    handleClose();
   };
 
   return (
     <>
       <List sx={{ border: "1px solid black", py: 0, borderRadius: "5px" }}>
-        <ListItem
-          sx={{
-            cursor: "pointer",
-            borderBottom: "1px solid grey",
-            backgroundColor: selectedItem === null ? "lightgray" : "inherit", // Highlight selected item
-          }}
-          onClick={() => handleGroupUpdate(null)}
-        >
-          <ListItemText
-            primary={
-              <Typography fontWeight={"bold"}>Non Group Expense</Typography>
-            }
-          />
-        </ListItem>
-        {allGroups.length > 0 &&
-          allGroups.map((group, index) => (
+        {allParticipants.length > 0 &&
+          allParticipants.map((participant, index) => (
             <ListItem
               sx={{
                 cursor: "pointer",
                 borderBottom: "1px solid grey",
                 backgroundColor:
-                  selectedItem === group ? "lightgray" : "inherit", // Highlight selected item
+                  selectedItem === participant ? "lightgray" : "inherit", // Highlight selected item
               }}
               key={index}
-              onClick={() => handleGroupUpdate(group)}
+              onClick={() => handlePaidByUpdate(participant)}
             >
               <ListItemAvatar>
-                <Avatar {...stringAvatar(group.name)}></Avatar>
+                <Avatar {...stringAvatar(participant.name)}></Avatar>
               </ListItemAvatar>
-              <ListItemText primary={group.name} />
+              <ListItemText primary={participant.name} />
             </ListItem>
           ))}
       </List>
@@ -96,4 +87,4 @@ const SelectGroup = ({ props }) => {
   );
 };
 
-export default SelectGroup;
+export default SelectPaidBy;

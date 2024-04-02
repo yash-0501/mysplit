@@ -1,6 +1,10 @@
 import { Router } from "express";
 import { login } from "./auth.controllers";
-import { loginHandler, logoutHandler, registerHandler } from "./auth.jwt.controller";
+import {
+  loginHandler,
+  logoutHandler,
+  registerHandler,
+} from "./auth.jwt.controller";
 
 const router = Router();
 

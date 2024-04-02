@@ -9,22 +9,20 @@ import { Balance } from "../balance/balance.models";
 import { createUserAndBalance } from "./auth.user-balance-service";
 
 const registerHandler = async (req: Request, res: Response) => {
+  // ** Get The User Data From Body ;
+  const user = req.body;
 
-    // ** Get The User Data From Body ;
-    const user = req.body;
-
-    // ** destructure the information from user;
-    const { name, email, password, confirm } = user as UserType;
-    if(name.length == 0)
-      return res.json({error:"Name is required"});
-    try {
-      const parsedUser = await userSchema.parseAsync({
-        name,
-        email,
-        password,
-        confirm,
-      });
-      // ** Check the email all ready exist  in database or not ;
+  // ** destructure the information from user;
+  const { name, email, password, confirm } = user as UserType;
+  if (name.length == 0) return res.json({ error: "Name is required" });
+  try {
+    const parsedUser = await userSchema.parseAsync({
+      name,
+      email,
+      password,
+      confirm,
+    });
+    // ** Check the email all ready exist  in database or not ;
     // ** Import the user model from "./models/user";
 
     const isEmailAllReadyExist = await User.findOne({
@@ -45,7 +43,7 @@ const registerHandler = async (req: Request, res: Response) => {
     // ** You can use bcrypt to hash the plain password.
 
     // now create the user;
-    await createUserAndBalance(parsedUser)
+    await createUserAndBalance(parsedUser);
     // const newUser = await User.create({
     //   name,
     //   email,
@@ -61,17 +59,13 @@ const registerHandler = async (req: Request, res: Response) => {
       success: true,
       message: "Account Created! \n Please Login!",
     });
-
-    } catch (err) {
-      if (err instanceof ZodError) {
-        // console.log(err);
-        const errorMessage = err.errors.map((err) => err.message).join(", ");
-        return res
-          
-          .json({ error: errorMessage, message: "Some error occurred" });
-      } else
-        return res.json({ error: "Some Error Occured", err });
-    }
+  } catch (err) {
+    if (err instanceof ZodError) {
+      // console.log(err);
+      const errorMessage = err.errors.map((err) => err.message).join(", ");
+      return res.json({ error: errorMessage, message: "Some error occurred" });
+    } else return res.json({ error: "Some Error Occured", err });
+  }
 };
 
 const loginHandler = async (req: Request, res: Response) => {
@@ -172,10 +166,10 @@ const loginHandler = async (req: Request, res: Response) => {
   }
 };
 
-const logoutHandler = (req: Request, res: Response) =>{
-  res.clearCookie('jwt');
+const logoutHandler = (req: Request, res: Response) => {
+  res.clearCookie("jwt");
   // Redirect to the home page or any other desired location
-  return res.json({message:"Logged Out Successfuly"})
-}
+  return res.json({ message: "Logged Out Successfuly" });
+};
 
 export { registerHandler, loginHandler, logoutHandler };
