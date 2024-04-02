@@ -24,7 +24,7 @@ const Debts = ({props}) =>{
     console.log(getBacks);
     
     const debtsTable = (
-        <Paper sx={{ p: 2, height: '100%' }} >
+        
         <Grid container spacing={2} >
           <Grid item xs={12} md={6}>
             <Typography variant="h5" sx={{fontWeight: '600', color: 'grey'}} >You Owe</Typography>
@@ -144,18 +144,18 @@ const Debts = ({props}) =>{
             </List>
           </Grid>
         </Grid>
-      </Paper>
+      
     )
 
     return (
-        <Box>
+        <Box sx={{overflowY:'auto'}} >
             
             {debts? <>{debtsTable}</> : <Typography>No Debts</Typography>}
                 
 
             
 
-        </Box>
+            </Box>
     )
 }
 

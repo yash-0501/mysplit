@@ -26,18 +26,20 @@ const addToBalance = async (data: DebtType, session: ClientSession) => {
       }).session(session);
 
       if (!paidByBalanceDetails) {
-        
         const bal = new Balance({
           user: paidByUser,
           group: group,
           balanceType: debtType,
         });
-        
+
         await bal.save({ session });
       }
 
       const paidByUpdateDetails = {
-        $inc: { totalShare: parseFloat(amount.toFixed(2)) },
+        $inc: {
+          totalShare: parseFloat(amount.toFixed(2)),
+          totalPaidFor: parseFloat(amount.toFixed(2)),
+        },
       };
       const updatedBalPaidBy = await Balance.findOneAndUpdate(
         { user: paidByUser, group: group, balanceType: debtType },
@@ -149,7 +151,6 @@ const addToBalance = async (data: DebtType, session: ClientSession) => {
       { new: true, session: session }
     );
   } catch (err) {
-    
     throw Error("Some Error is there!");
   }
 };

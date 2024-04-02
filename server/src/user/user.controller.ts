@@ -13,8 +13,16 @@ const handleCreateUser = async (req: Request, res: Response) => {
 };
 
 const listAllUsers = async (req: Request, res: Response) => {
-  const allUsers = await User.find({});
+  const currUser = req.user as UserType;
+  const allUsers = await User.find({}).sort({name:1});
   if (allUsers.length < 1) return res.json({ error: "No user found" });
+  const currentUserIndex = allUsers.findIndex(user => user.email === currUser.email);
+  if (currentUserIndex === -1) {
+    return res.status(404).json({ error: "Current user not found" });
+  }
+  const currentUser = allUsers.splice(currentUserIndex, 1)[0];
+  allUsers.unshift(currentUser);
+
   return res.json(allUsers);
 };
 

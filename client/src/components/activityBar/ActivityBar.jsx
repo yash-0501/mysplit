@@ -17,7 +17,7 @@ const ActivityBar = ({props}) => {
         md: '25%',
     },
     background: '#f0f0f0',
-    height: '90vh',
+    height: '100%',
   }}
 >
   <ActivityList props={props} />

@@ -30,18 +30,15 @@ const LandingPage = () =>{
       }, []);
    
     return (
-        <>
+        <Box sx={{ height:'100vh',  display:'flex', flexDirection:'column', flexWrap:1 }}>
         <Header props={user} />
-        <Container>
-            <Box sx={{width:'100%', display: 'flex'}}>
-            <Dashboard props={{user: {...currUser}, balance, balanceDetails}} />
-            <ActivityBar props={{user: {...currUser}, expenses}} />
+        <Container sx={{height:'100%',  overflowY:'auto'}}>
+            <Box sx={{width:'100%', display: 'flex', height:'100%'}}>
+                <Dashboard props={{user: {...currUser}, balance, balanceDetails}} />
+                <ActivityBar props={{user: {...currUser}, expenses}} />
             </Box>
-            
-            
-            
         </Container>
-        </>
+        </Box>
     )
 }
 

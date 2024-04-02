@@ -48,6 +48,7 @@ const getAllExpensesHandler = async (req: Request, res: Response) => {
 };
 
 interface ExpenseRequestBody {
+  expenseDate: Date,
   description: string;
   amount: number;
   paidBy: string;
@@ -63,6 +64,7 @@ const addExpenseHandler = async (
   res: Response
 ) => {
   const {
+    expenseDate,
     description,
     amount,
     paidBy,
@@ -117,8 +119,9 @@ const addExpenseHandler = async (
       .json({ error: "Please check total split and participants." });
   try {
     const createdAt = new Date();
-
+    const expenseDateObj = new Date(expenseDate);
     const parsedExpense = await expenseSchema.parseAsync({
+      expenseDate:expenseDateObj,
       description,
       amount,
       paidBy,

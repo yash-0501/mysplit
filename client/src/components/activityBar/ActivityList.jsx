@@ -4,15 +4,8 @@ import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
-import { useState } from 'react';
-import { useEffect } from 'react';
-import getActivityUtil from '../../utils/activity.util';
-import { useContext } from 'react';
-import UserContext from '../../../context/userContext';
-import axios from 'axios';
-import fetchExpenses from '../../utils/activity.util';
-import { Box, Button, Divider, Paper, Typography, Link } from '@mui/material';
-// import { Link } from 'react-router-dom';
+import { Box, Button, Divider, Paper, Typography } from '@mui/material';
+import { Link } from 'react-router-dom';
 
 
 
@@ -24,16 +17,18 @@ export default function ActivityList({props}) {
     console.log(expenses)
 
     const myActivity = (
-        <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
+        <List sx={{ width: '100%'}}>
             {expenses.map((expense, index)=>(
-                <Link href={`expenses/${expense._id}`} key={expense._id} sx={{textDecoration: 'none'}}>
+                <Link to={`expenses/${expense._id}`} key={expense._id} style={{textDecoration:'none', color:'inherit'}}>
                 
-                <ListItem alignItems="flex-start" key={expense.createdAt}>
+                <ListItem alignItems='center'>
                 <ListItemAvatar>
-                    <Avatar alt={expense.paidBy.name} src="/static/images/avatar/1.jpg" />
+                    <Avatar sx={{width:'50px', height:'50px'}} alt={expense.paidBy.name} src="/static/images/avatar/1.jpg" />
                 </ListItemAvatar>
                 <ListItemText
-                    primary={expense.description}
+                    primary={
+                        <Typography sx={{fontWeight:570}}>{expense.description}</Typography>
+                    }
                     secondary={<React.Fragment>
                         <Typography
                             sx={{ display: 'inline' }}
