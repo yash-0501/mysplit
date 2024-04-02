@@ -55,7 +55,7 @@ export const isAuthenticated = (
 
 app.use("/expenses", isLoggedIn, expenseRouter);
 app.use("/auth", authRouter);
-app.use("/users", userRouter);
+app.use("/users", isLoggedIn ,userRouter);
 app.use("/balance", isLoggedIn, balanceRouter);
 app.use("/groups", isLoggedIn, groupRouter);
 

@@ -1,8 +1,9 @@
 import { Box, Button, Divider, Paper, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
-import fetchBalanceSummary from "../../utils/balanceSummary.util";
 import Debts from "./Debts";
 import BalanceSummary from "./BalanceSummary";
+import AddExpenseForm from "./AddExpenseForm";
+import { Link } from "react-router-dom";
+
 
 const Dashboard = ({props}) => {
 
@@ -19,8 +20,10 @@ const Dashboard = ({props}) => {
                 xs: '100%',
                 md: '75%',
             },
-            display: 'block',
-            padding: {md:'15px', xs:'7.5px'},
+            display: 'flex',
+            flexDirection:'column',
+            padding: {md:'5px', xs:'7.5px'},
+            height:'100%'
         }}>
             
             <Box sx={{display: 'flex',
@@ -51,12 +54,9 @@ const Dashboard = ({props}) => {
                     alignItems: 'center',
                 }}>
                     {!!user && (<Typography variant="h6">Hey, <i>{user.name}!</i></Typography>)}  
-                    <Box>
-                        <Button variant="contained" color="error" href="/expenses/add" sx={{
-                            ml:2,
-                            my:1
-                        }} size="small">Add Split?</Button>   
-                        <Button variant="contained" color="success" href="/settle" sx={{
+                    <Box>  
+                        <AddExpenseForm props={{user:user}} />
+                        <Button variant="contained" color="success" component={Link} to="/settle" sx={{
                             ml:2,
                             my:1
                         }} size="small">Settle Now?</Button>   
@@ -66,12 +66,11 @@ const Dashboard = ({props}) => {
                         }} size="small">Join Friends?</Button>
                     </Box>   
                 </Box>
-                
             </Paper>
             </Box>
 
             {!!user && !!balanceDetails && (<BalanceSummary props={balanceDetails} />)}
-            {!!balance && <Debts props={balance} />}
+            <Debts props={balance} />
         </Box>
     )
 }

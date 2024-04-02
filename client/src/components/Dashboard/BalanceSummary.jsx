@@ -14,7 +14,7 @@ const BalanceSummary = ({props}) =>{
             border: '1px solid grey',
             borderBottom: '1px solid grey',
             mb:1,
-            height:{md:'15%'},
+            p:{md:2},
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center'

@@ -31,7 +31,7 @@ const showGroups = async (req: Request, res: Response) => {
         members: user._id,
       }).sort({ _id: -1 });
       if (!userGroups || userGroups.length == 0)
-        return res.json({ message: "No Groups yet, create or join one!" });
+        return res.json({ error: "No Groups yet, create or join one!" });
       else return res.json({ user: reqUser, groups: userGroups });
     }
   } catch (err) {
@@ -130,7 +130,7 @@ const editGroup = async (req: Request, res: Response) => {
       const foundGroup = await Group.findOne({ _id: groupId });
 
       if (!foundGroup)
-        return res.json({ message: "No Groups yet, create or join one!" });
+        return res.json({ error: "No Groups yet, create or join one!" });
       let { name, members = [] } = req.body;
 
       if (!name) name = foundGroup.name;
@@ -145,7 +145,7 @@ const editGroup = async (req: Request, res: Response) => {
 
       return res.json(updatedGroup);
     }
-    return res.json({ message: "No such user exists!" });
+    return res.json({ error: "No such user exists!" });
   } catch (err) {
     return res.json(err);
   }

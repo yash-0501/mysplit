@@ -55,6 +55,7 @@ function Header({props}) {
   }
 
   return (
+    <Box sx={{flexGrow:1}}>
     <AppBar position="static">
       <Container>
         <Toolbar disableGutters>
@@ -199,6 +200,7 @@ function Header({props}) {
         </Toolbar>
       </Container>
     </AppBar>
+    </Box>
   );
 }
 export default Header;
