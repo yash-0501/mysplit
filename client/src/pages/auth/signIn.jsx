@@ -39,7 +39,6 @@ export default function SignIn() {
     try {
       let res = await axios.post("auth/login", userData);
       res = res.data;
-      console.log(res);
       if (res.error) toast.error(res.error);
       else {
         let profileRes = await axios.get("users/profile");

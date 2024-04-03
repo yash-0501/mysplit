@@ -3,27 +3,45 @@ import UseAuth from "../../hooks/useAuth";
 import UserContext from "../../../context/userContext";
 import Header from "../../components/header/header";
 import ActivityBar from "../../components/activityBar/ActivityBar";
-import { Box, Container } from "@mui/material";
+import { Box, Button, Container } from "@mui/material";
 import fetchExpenses from "../../utils/activity.util";
 import fetchBalance from "../../utils/balance.utl";
 import fetchBalanceSummary from "../../utils/balanceSummary.util";
 import Dashboard from "../../components/Dashboard/DashBoard";
+import Loader from "../../components/Loader/Loader";
 
 const LandingPage = () => {
   const { user } = useContext(UserContext);
-  console.log(user);
+  
 
   const [expenses, setExpenses] = useState([]);
   const [balance, setBalance] = useState([]);
   const [balanceDetails, setBalanceDetails] = useState(null);
+
+  const [dataUpdated, setDataUpdated] = useState("null");
   const [currUser, setCurrUser] = useState(null);
 
+  const handleDataUpdate = (val) => {
+    setDataUpdated(val);
+  }
+
   useEffect(() => {
-    fetchExpenses(setExpenses);
-    fetchBalance(setBalance);
-    fetchBalanceSummary(setBalanceDetails);
-    setCurrUser(user);
-  }, []);
+    
+    setExpenses(null);
+    setBalance(null);
+    setBalanceDetails(null);
+    let ignore = false;
+    if (!ignore) {
+      fetchExpenses(setExpenses);
+      fetchBalance(setBalance);
+      fetchBalanceSummary(setBalanceDetails);
+      setCurrUser(user);
+    }
+
+    return () => {
+      ignore = true;
+    };
+  }, [dataUpdated]);
 
   return (
     <Box
@@ -34,14 +52,20 @@ const LandingPage = () => {
         flexWrap: 1,
       }}
     >
-      <Header props={user} />
+      <Header props={{ user }} />
       <Container sx={{ height: "100%", overflowY: "auto" }}>
-        <Box sx={{ width: "100%", display: "flex", height: "100%" }}>
+        {(balance!==null && expenses !== null && balanceDetails !==null)?(<Box sx={{ width: "100%", display: "flex", height: "100%" }}>
           <Dashboard
-            props={{ user: { ...currUser }, balance, balanceDetails }}
+            props={{
+              user: { ...currUser },
+              balance,
+              balanceDetails,
+              setDataUpdated: handleDataUpdate,
+              dataUpdated: dataUpdated,
+            }}
           />
           <ActivityBar props={{ user: { ...currUser }, expenses }} />
-        </Box>
+        </Box>):<Loader />}
       </Container>
     </Box>
   );

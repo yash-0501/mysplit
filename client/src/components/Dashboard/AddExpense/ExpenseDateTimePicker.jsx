@@ -5,7 +5,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 
-export default function DateTimePickerValue() {
+export default function DateTimePickerValue({ props }) {
   function formatDate(date) {
     const d = new Date(date);
     const year = d.getFullYear();
@@ -17,9 +17,8 @@ export default function DateTimePickerValue() {
     return `${year}-${month}-${day}T${hours}:${minutes}`;
   }
 
-  const currDate = Date.now();
-
-  const [value, setValue] = React.useState(dayjs(formatDate(currDate)));
+  const expenseFormData = props.expenseFormData;
+  const setExpenseFormData = props.setExpenseFormData;
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -27,8 +26,12 @@ export default function DateTimePickerValue() {
         <DateTimePicker
           disableFuture
           label="Controlled picker"
-          value={value}
-          onChange={(newValue) => setValue(newValue)}
+          value={dayjs(formatDate(expenseFormData.expenseDate))}
+          onChange={(newValue) => {
+            const newDate = new Date(newValue).getTime();
+            setExpenseFormData({ ...expenseFormData, expenseDate: newDate });
+          }}
+          onClose={props.handleClose}
         />
       </DemoContainer>
     </LocalizationProvider>

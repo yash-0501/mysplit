@@ -10,6 +10,10 @@ import { router as userRouter } from "./user/user.router";
 import { router as groupRouter } from "./group/group.routes";
 import { isLoggedIn } from "./auth/auth.middleware";
 import { router as balanceRouter } from "./balance/balance.router";
+import morgan from "morgan";
+import fs from "fs";
+import path from "path";
+
 var cookieParser = require("cookie-parser");
 const cors = require("cors");
 
@@ -26,6 +30,15 @@ app.use(
     credentials: true,
   })
 );
+
+// Define custom log format
+const logFormat = ":date[iso] :method :url :status - :response-time ms";
+
+
+var accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), { flags: 'a' })
+ 
+// setup the logger
+app.use(morgan(logFormat, { stream: accessLogStream }))
 
 app.use(bodyParser.json());
 app.use(cookieParser());

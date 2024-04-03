@@ -14,9 +14,9 @@ const NestedModalForm = ({ props }) => {
     case "Group":
       return <SelectGroup props={props} />;
     case "Date":
-      return <ExpenseDateTimePicker />;
+      return <ExpenseDateTimePicker props={props} />;
     default:
-      return <SelectExpenseType />;
+      return <SelectExpenseType props={props}/>;
   }
 };
 

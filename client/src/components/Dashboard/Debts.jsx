@@ -18,7 +18,6 @@ import {
 import React, { useEffect, useState } from "react";
 
 const Debts = ({ props }) => {
-  console.log(props);
   const Nothing = (props) => (
     <ListItem key={props}>
       <ListItemText
@@ -37,8 +36,6 @@ const Debts = ({ props }) => {
     owes = debts?.owes;
     getBacks = debts?.getBacks;
   }
-
-  console.log(getBacks);
 
   const debtsTable = (
     <Grid container spacing={2}>

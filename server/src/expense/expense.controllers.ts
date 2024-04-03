@@ -23,27 +23,50 @@ const getAllExpensesHandler = async (req: Request, res: Response) => {
     if (req.user) {
       const reqUser = req.user as UserType;
       const user = await User.findOne({ email: reqUser.email });
-      if (!user) return res.status(401).json({ error: "No such user" });
+      if (!user) return res.json({ error: "No such user" });
+      
+      const pipeline = [
+        
+        {
+          $unwind: "$participants",
+        },
+        {
+          $match: {
+            "participants.participant": user._id,
+          },
+        },
+  
+        
+        {
+          $project: {
+            _id: 1,
+            description: 1,
+            amount: 1,
+            createdBy: 1,
+            createdAt: 1,
+            expenseDate: 1,
+            paidBy: 1,
+            group: 1,
+            yourShare: "$participants.share",
+          },
+        },
+      ];
 
-      const expenses = await Expense.find({
-        $or: [
-          { createdBy: user },
-          { "participants.participant": user },
-          { paidBy: user },
-        ],
-      })
-        .sort({ _id: -1 })
-        .populate("participants.participant")
-        .populate("paidBy")
-        .populate("createdBy")
-        .populate("group");
-      const response = await getExpenseSummary(expenses, user._id);
+      let response: ExpenseType[] = [];
+      await Expense.aggregate(pipeline)
+        .then((expenses) => {
+          console.log("Expenses for user with share:", expenses);
+          response = expenses;
+        })
+        .catch((error) => {
+          console.error("Error calculating expenses with share:", error);
+        });
       return res.json({ expenses: response });
     } else {
       res.json({ error: "Please Login" });
     }
   } catch (err) {
-    return res.status(400).json(err);
+    return res.json(err);
   }
 };
 
@@ -80,9 +103,9 @@ const addExpenseHandler = async (
 
   if (splitType.toUpperCase() != splitTypes.equal) {
     if (isValidSplit(splitShares) == 1) {
-      return res.status(401).json({ error: "A split is required!" });
+      return res.json({ error: "A split is required!" });
     } else if (isValidSplit(splitShares) == 2) {
-      return res.status(401).json({ error: "A split must be a number." });
+      return res.json({ error: "A split must be a number." });
     }
   }
   let splitByParticipants;
@@ -114,9 +137,7 @@ const addExpenseHandler = async (
       break;
   }
   if (splitByParticipants === null)
-    return res
-      .status(401)
-      .json({ error: "Please check total split and participants." });
+    return res.json({ error: "Please check total split and participants." });
   try {
     const createdAt = new Date();
     const expenseDateObj = new Date(expenseDate);
@@ -135,28 +156,23 @@ const addExpenseHandler = async (
     const userId = parsedExpense["paidBy"];
     try {
       const paidByUser = await User.findById(userId);
-      if (!paidByUser) return res.status(404).json({ error: "Invalid User" });
+      if (!paidByUser) return res.json({ error: "Invalid User" });
 
       const newExpense = await createExpenseandUpdateBalance(parsedExpense);
-      return res
-        .status(200)
-        .json({ message: "Expense Added Successfully", expense: newExpense });
+      return res.json({
+        message: "Expense Added Successfully",
+        expense: newExpense,
+      });
     } catch (err) {
       if (err instanceof Error)
-        return res
-          .status(500)
-          .json({ error: err.message, message: "Some Error occured" });
-      return res
-        .status(500)
-        .json({ error: err, message: "Some Error occured" });
+        return res.json({ error: err.message, message: "Some Error occured" });
+      return res.json({ error: err, message: "Some Error occured" });
     }
   } catch (err) {
     if (err instanceof ZodError) {
       const errorMessage = err.errors.map((err) => err.message).join(", ");
-      return res
-        .status(401)
-        .json({ error: errorMessage, message: "Some error occured" });
-    } else return res.status(401).json({ message: "Some Error Occured", err });
+      return res.json({ error: errorMessage, message: "Some error occured" });
+    } else return res.json({ message: "Some Error Occured", err });
   }
 };
 
@@ -169,14 +185,14 @@ const getExpenseDetailsHandler = async (req: Request, res: Response) => {
       .populate("paidBy")
       .populate("createdBy")
       .populate("group");
-    if (!expense) return res.status(404).json({ error: "Invalid id" });
-    return res.status(200).json(expense);
+    if (!expense) return res.json({ error: "Invalid id" });
+    return res.json(expense);
   } catch (err) {
     if (err instanceof MongooseError) {
       const errorMessage = err;
-      return res.status(404).json({ error: "Invalid id" });
+      return res.json({ error: "Invalid id" });
     } else {
-      return res.status(404).json({ message: "Some Error Occured" });
+      return res.json({ message: "Some Error Occured" });
     }
   }
 };
@@ -198,14 +214,14 @@ const updateExpenseDetails = async (req: Request, res: Response) => {
   //   const expense = await Expense.findByIdAndUpdate(expense_id, expenseData, {
   //     new: true,
   //   });
-  //   if (!expense) return res.status(404).json({ error: "Invalid id" });
-  //   return res.status(200).json({ expense, message: "updated successfully" });
+  //   if (!expense) return res.json({ error: "Invalid id" });
+  //   return res.json({ expense, message: "updated successfully" });
   // } catch (err) {
   //   if (err instanceof MongooseError) {
   //     const errorMessage = err;
-  //     return res.status(404).json({ error: "Invalid id" });
+  //     return res.json({ error: "Invalid id" });
   //   } else {
-  //     return res.status(404).json({ message: "Some Error Occured" });
+  //     return res.json({ message: "Some Error Occured" });
   //   }
   // }
 };
@@ -214,14 +230,14 @@ const deleteExpense = async (req: Request, res: Response) => {
   const expense_id = req.params.id;
   try {
     const expense = await Expense.findByIdAndDelete(expense_id);
-    if (!expense) return res.status(404).json({ error: "Invalid id" });
-    return res.status(200).json({ message: "Expense Deleted" });
+    if (!expense) return res.json({ error: "Invalid id" });
+    return res.json({ message: "Expense Deleted" });
   } catch (err) {
     if (err instanceof MongooseError) {
       const errorMessage = err;
-      return res.status(404).json({ error: "Invalid id" });
+      return res.json({ error: "Invalid id" });
     } else {
-      return res.status(404).json({ message: "Some Error Occured" });
+      return res.json({ message: "Some Error Occured" });
     }
   }
 };

@@ -11,7 +11,7 @@ import { fetchGroupWiseExpenseSummary } from "../expense/service/fetchSummary.Gr
 const clearData = async (req: Request, res: Response) => {
   try {
     await Expense.deleteMany({});
-    // await Group.deleteMany({});
+    await Group.updateMany({},{$set:{totalExpense:0}});
     // await User.deleteMany({});
     await Debt.deleteMany({});
     await Balance.deleteMany({});
@@ -29,7 +29,7 @@ const showGroups = async (req: Request, res: Response) => {
       if (!user) return res.status(401).json({ error: "No such user" });
       const userGroups = await Group.find({
         members: user._id,
-      }).sort({ _id: -1 });
+      }).sort({ _id: -1 }).populate('members', '_id email name');
       if (!userGroups || userGroups.length == 0)
         return res.json({ error: "No Groups yet, create or join one!" });
       else return res.json({ user: reqUser, groups: userGroups });

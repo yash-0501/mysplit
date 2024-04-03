@@ -17,6 +17,8 @@ import SearchParticipants from "./AddExpense/searchParticipants";
 import NestedModalForm from "./AddExpense/NestedModalForm";
 import fetchAllGroups from "../../utils/getAllGroups.util";
 import fetchAllUsers from "../../utils/getAllUsers.utli";
+import createExpense from "../../utils/addExpense.util";
+import { useLocation, useNavigate } from "react-router-dom";
 
 function ChildModal({ props }) {
   const [childTransition, setChildTransition] = React.useState(false);
@@ -42,7 +44,6 @@ function ChildModal({ props }) {
   };
 
   const formType = props.name;
-  console.log(props);
 
   const handleTransition = props.handleTransition;
   const transition = props.transition;
@@ -62,6 +63,14 @@ function ChildModal({ props }) {
     setChildTransition(!childTransition);
   };
   const containerRef = React.useRef(null);
+
+  const formatDate = (timestamp) => {
+    const date = new Date(timestamp);
+    const options = { month: "long", day: "numeric", year: "numeric" };
+    const formattedDate = date.toLocaleString("en-US", options);
+    return formattedDate;
+  };
+
   return (
     <React.Fragment>
       <Button
@@ -69,7 +78,16 @@ function ChildModal({ props }) {
         variant="contained"
         onClick={handleOpen}
       >
-        {formType}
+        {formType === "Group" && props.expenseFormData.group !== null
+          ? props.expenseFormData.group.name
+          : formType === "PaidBy" &&
+            props.expenseFormData.paidBy.name !== props.user.name
+          ? props.expenseFormData.paidBy.name
+          : formType === "Date"
+          ? formatDate(props.expenseFormData.expenseDate)
+          : formType === "Split Type"
+          ? props.expenseFormData.splitType
+          : props.display}
       </Button>
       <Modal
         open={open}
@@ -96,11 +114,14 @@ function ChildModal({ props }) {
 }
 
 export default function AddExpenseForm({ props }) {
-  const [allUsers, setAllUsers] = React.useState([]);
   const user = props.user;
+  const setDataUpdated = props.setDataUpdated;
+  const dataUpdated = props.dataUpdated;
+
+  const [allUsers, setAllUsers] = React.useState([]);
   const [allGroups, setAllGroups] = React.useState([]);
 
-  const currDate = Date.now().toString();
+  const currDate = Date.now();
 
   const expenseFormDataState = {
     description: "",
@@ -112,15 +133,13 @@ export default function AddExpenseForm({ props }) {
     expenseDate: currDate,
     group: null,
   };
-  const [expenseFormData, setExpenseFormData] =
-    React.useState(expenseFormDataState);
+  const [expenseFormData, setExpenseFormData] = React.useState({});
 
   React.useEffect(() => {
     fetchAllGroups(setAllGroups);
     fetchAllUsers(setAllUsers);
-  }, []);
-
-  console.log(allGroups);
+    setExpenseFormData(expenseFormDataState);
+  }, [user]);
 
   const [open, setOpen] = React.useState(false);
   const [transition, setTransition] = React.useState(false);
@@ -147,9 +166,12 @@ export default function AddExpenseForm({ props }) {
 
   const addExpense = async (event) => {
     event.preventDefault();
-    console.log(expenseFormData);
     handleClose();
+    await createExpense(expenseFormData);
+
     setExpenseFormData(expenseFormDataState);
+
+    props.setDataUpdated(Date.now());
   };
 
   return (
@@ -231,6 +253,8 @@ export default function AddExpenseForm({ props }) {
                   transition: transition,
                   expenseFormData: expenseFormData,
                   setExpenseFormData: setExpenseFormData,
+                  display: user.name,
+                  user: user,
                 }}
               />
               <ChildModal
@@ -241,6 +265,8 @@ export default function AddExpenseForm({ props }) {
                   transition: transition,
                   expenseFormData: expenseFormData,
                   setExpenseFormData: setExpenseFormData,
+                  display: "No Group Selected",
+                  user: user,
                 }}
               />
               <ChildModal
@@ -250,6 +276,8 @@ export default function AddExpenseForm({ props }) {
                   transition: transition,
                   expenseFormData: expenseFormData,
                   setExpenseFormData: setExpenseFormData,
+                  display: "Select Date",
+                  user: user,
                 }}
               />
               <ChildModal
@@ -259,6 +287,8 @@ export default function AddExpenseForm({ props }) {
                   transition: transition,
                   expenseFormData: expenseFormData,
                   setExpenseFormData: setExpenseFormData,
+                  display: "EQUAL",
+                  user: user,
                 }}
               />
               <Button

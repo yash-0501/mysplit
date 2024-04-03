@@ -45,15 +45,20 @@ function stringAvatar(name) {
 }
 
 const SelectGroup = ({ props }) => {
-  const [selectedItem, setSelectedItem] = useState(null);
+
+  const setExpenseFormData = props.setExpenseFormData;
+  const expenseFormData = props.expenseFormData;
+  const handleClose = props.handleClose;
+
+  const [selectedItem, setSelectedItem] = useState(expenseFormData.group);
 
   const allGroups = props.allGroups;
-  console.log(allGroups);
+  
 
   const handleGroupUpdate = (group) => {
-    if (group === null) alert("No group expense!");
     setSelectedItem(group);
-    alert(group.name);
+    setExpenseFormData({...expenseFormData,group:group});
+    handleClose();
   };
 
   return (

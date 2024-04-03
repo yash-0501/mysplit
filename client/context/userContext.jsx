@@ -15,7 +15,6 @@ export function UserContextProvider({ children }) {
           setIsLoading(false);
           console.log("Something missing here");
         } else {
-          console.log(data);
           setUser(data);
           setIsLoading(false);
         }
@@ -26,7 +25,7 @@ export function UserContextProvider({ children }) {
         setIsLoading(false);
       });
   }, []);
-  console.log("Context: ", isLoading);
+
   return (
     <UserContext.Provider value={{ user, setUser, isLoading }}>
       {children}

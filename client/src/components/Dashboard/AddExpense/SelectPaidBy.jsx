@@ -71,7 +71,7 @@ const SelectPaidBy = ({ props }) => {
                 cursor: "pointer",
                 borderBottom: "1px solid grey",
                 backgroundColor:
-                  selectedItem === participant ? "lightgray" : "inherit", // Highlight selected item
+                  selectedItem._id === participant._id ? "lightgray" : "inherit", // Highlight selected item
               }}
               key={index}
               onClick={() => handlePaidByUpdate(participant)}

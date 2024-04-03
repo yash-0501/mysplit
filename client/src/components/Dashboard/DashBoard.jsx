@@ -9,7 +9,6 @@ const Dashboard = ({ props }) => {
   const balance = props.balance;
   const balanceDetails = props.balanceDetails;
 
-  console.log(balanceDetails);
 
   return (
     <Box
@@ -74,7 +73,7 @@ const Dashboard = ({ props }) => {
               </Typography>
             )}
             <Box>
-              <AddExpenseForm props={{ user: user }} />
+              <AddExpenseForm props={{ user: user, setDataUpdated: props.setDataUpdated, dataUpdated:props.dataUpdated  }} />
               <Button
                 variant="contained"
                 color="success"

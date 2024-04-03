@@ -15,7 +15,7 @@ import AdbIcon from "@mui/icons-material/Adb";
 import { Badge } from "@mui/material";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import logoutUser from "../../utils/logout.util";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useContext } from "react";
 import UserContext from "../../../context/userContext";
@@ -25,6 +25,7 @@ const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
 function Header({ props }) {
   const user = props;
+
   const { setUser } = useContext(UserContext);
   const navigate = useNavigate();
   const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -61,8 +62,6 @@ function Header({ props }) {
             <Typography
               variant="h6"
               noWrap
-              component="a"
-              href="#app-bar-with-responsive-menu"
               sx={{
                 mr: 2,
                 display: { xs: "none", md: "flex" },
@@ -73,7 +72,7 @@ function Header({ props }) {
                 textDecoration: "none",
               }}
             >
-              LOGO
+              <Link to={'/'} replace style={{ textDecoration: "none", color: "inherit" }}>LOGO</Link>
             </Typography>
 
             <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>

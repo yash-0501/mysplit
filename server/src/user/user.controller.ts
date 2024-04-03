@@ -32,9 +32,9 @@ const listCurrentUser = async (req: Request, res: Response) => {
   const user = req.user as UserType;
 
   if (!user) return res.json({ error: "Please Login" });
-  const currUser = await User.findOne({ email: user.email });
+  const currUser = await User.findOne({ email: user.email }, 'email name _id');
   if (!currUser) return res.json({ error: "Please Login" });
-  return res.json({ email: currUser.email, name: currUser.name });
+  return res.json(currUser);
 };
 
 export { handleCreateUser, listAllUsers, listCurrentUser };

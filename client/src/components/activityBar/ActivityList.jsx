@@ -8,11 +8,11 @@ import { Box, Button, Divider, Paper, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 
 export default function ActivityList({ props }) {
-  console.log(props);
+
   const user = props.user;
   const expenses = props.expenses;
-  console.log(expenses);
 
+  console.log(expenses)
   const myActivity = (
     <List sx={{ width: "100%" }}>
       {expenses.map((expense, index) => (

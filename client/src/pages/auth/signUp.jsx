@@ -36,12 +36,12 @@ export default function SignUp() {
       confirm: data.get("confirm"),
       name: data.get("name"),
     };
-    console.log(userData);
+
     try {
-      console.log("Hey");
+
       let res = await axios.post("auth/register", userData);
       res = res.data;
-      console.log(res);
+
       if (res.error) toast.error(res.error);
       else {
         setData({});
