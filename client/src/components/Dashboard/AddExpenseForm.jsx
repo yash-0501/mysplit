@@ -31,12 +31,12 @@ function ChildModal({ props }) {
     left: { md: "50%", xs: "0%" },
     transform: "translate(-50%, -50%)",
     width: { md: "40%", xs: "90%" },
+    height: '75vh',
     bgcolor: "background.paper",
     border: "2px solid #000",
     boxShadow: 24,
     p: 4,
     transition: "left 2s",
-    overflow: "hidden",
   };
 
   const openStyle = {
@@ -110,7 +110,6 @@ function ChildModal({ props }) {
           <Box sx={openStyle}>
             <h2 id="child-modal-title">{formType}</h2>
             <NestedModalForm props={{ ...props, handleClose }} />
-            <Button onClick={handleClose}>Close Child Modal</Button>
           </Box>
         </Fade>
       </Modal>
@@ -130,7 +129,7 @@ export default function AddExpenseForm({ props }) {
 
   const expenseFormDataState = {
     description: "",
-    amount: "",
+    amount: 0,
     paidBy: user,
     participants: [],
     splitType: "EQUAL",
@@ -225,7 +224,10 @@ export default function AddExpenseForm({ props }) {
                   expenseFormData: expenseFormData,
                 }}
               />
-              <TextField
+              {
+                (!expenseFormData.participants || expenseFormData?.participants.length<2) ? <></> : (
+                  <>
+                  <TextField
                 margin="normal"
                 required
                 fullWidth
@@ -324,10 +326,7 @@ export default function AddExpenseForm({ props }) {
                 }}
               />
               </Box>
-
-              
-
-              <Button
+                  <Button
                 type="submit"
                 fullWidth
                 variant="contained"
@@ -335,6 +334,13 @@ export default function AddExpenseForm({ props }) {
               >
                 Add Expense
               </Button>
+              </>
+                )
+              }
+
+              
+
+              
             </Box>
           </Box>
         </Fade>

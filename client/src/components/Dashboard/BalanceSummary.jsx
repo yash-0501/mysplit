@@ -28,8 +28,8 @@ const BalanceSummary = ({ props }) => {
             Total Balance
             <Typography color={balColor} fontWeight={"bold"}>
               {balanceDetails.totalBalance > 0
-                ? " You get back " + balanceDetails.totalBalance
-                : " You owe " + -balanceDetails.totalBalance}
+                ? " + " + balanceDetails.totalBalance
+                : " - " + -balanceDetails.totalBalance}
             </Typography>
           </Typography>
         </Grid>
@@ -40,7 +40,7 @@ const BalanceSummary = ({ props }) => {
         >
           <Typography>
             Your Total Share
-            <Typography color={"green"} fontWeight={"bold"}>
+            <Typography color={"black"} fontWeight={"bold"}>
               {balanceDetails.totalShare}
             </Typography>
           </Typography>

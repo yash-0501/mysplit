@@ -50,7 +50,7 @@ export default function ActivityList({ props }) {
                   </Typography>
                   <br />
                   {expense.paidBy.email == user.email
-                    ? "You get back " + (expense.amount - expense.yourShare)
+                    ? "You get back " + (parseFloat((expense.amount - expense.yourShare).toFixed(2)))
                     : "You owe " + expense.yourShare}
                 </React.Fragment>
               }
