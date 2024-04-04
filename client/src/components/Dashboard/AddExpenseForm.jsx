@@ -6,6 +6,8 @@ import Fade from "@mui/material/Fade";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import {
+  Avatar,
+  Chip,
   FormControl,
   InputLabel,
   MenuItem,
@@ -71,24 +73,27 @@ function ChildModal({ props }) {
     return formattedDate;
   };
 
+  const toDisplayChip =
+    formType === "Group" && props.expenseFormData.group !== null
+      ? props.expenseFormData.group.name
+      : formType === "PaidBy" &&
+        props.expenseFormData.paidBy.name !== props.user.name
+      ? props.expenseFormData.paidBy.name
+      : formType === "Date"
+      ? formatDate(props.expenseFormData.expenseDate)
+      : formType === "Split Type"
+      ? props.expenseFormData.splitType
+      : props.display;
+
   return (
     <React.Fragment>
-      <Button
-        sx={{ mx: 2, textAlign: "center" }}
-        variant="contained"
+      <Chip
+        color="info"
+        label={toDisplayChip}
         onClick={handleOpen}
-      >
-        {formType === "Group" && props.expenseFormData.group !== null
-          ? props.expenseFormData.group.name
-          : formType === "PaidBy" &&
-            props.expenseFormData.paidBy.name !== props.user.name
-          ? props.expenseFormData.paidBy.name
-          : formType === "Date"
-          ? formatDate(props.expenseFormData.expenseDate)
-          : formType === "Split Type"
-          ? props.expenseFormData.splitType
-          : props.display}
-      </Button>
+        size="small"
+        sx={{width: formType === "Group" ? '50%':"fit-content", mx: 1, textAlign: "center", p:1 }}
+      />
       <Modal
         open={open}
         onClose={handleClose}
@@ -142,7 +147,7 @@ export default function AddExpenseForm({ props }) {
   }, [user]);
 
   const [open, setOpen] = React.useState(false);
-  const [transition, setTransition] = React.useState(false);
+  const [transition, setTransition] = React.useState(true);
 
   const handleTransition = () => {
     setTransition(!transition);
@@ -161,10 +166,18 @@ export default function AddExpenseForm({ props }) {
     transition: { md: "left 2s!important" },
   };
 
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const handleOpen = () => {
+    setOpen(true);
+    setExpenseFormData(expenseFormDataState);
+    handleTransition();
+  }
+  const handleClose = () =>{ 
+    setOpen(false);
+    handleTransition();
+  };
 
   const addExpense = async (event) => {
+    console.log(expenseFormData);
     event.preventDefault();
     handleClose();
     await createExpense(expenseFormData);
@@ -245,31 +258,61 @@ export default function AddExpenseForm({ props }) {
                 }
                 value={expenseFormData.amount}
               />
-              <ChildModal
-                props={{
-                  name: "PaidBy",
-                  allGroups: allGroups,
-                  handleTransition: handleTransition,
-                  transition: transition,
-                  expenseFormData: expenseFormData,
-                  setExpenseFormData: setExpenseFormData,
-                  display: user.name,
-                  user: user,
+              <Box display={"flex"} sx={{width:'100%', textAlign:'center', justifyContent:'center', my:1.5}}>
+                <Typography>Paid by</Typography>
+                <ChildModal
+                  props={{
+                    name: "PaidBy",
+                    allGroups: allGroups,
+                    handleTransition: handleTransition,
+                    transition: transition,
+                    expenseFormData: expenseFormData,
+                    setExpenseFormData: setExpenseFormData,
+                    display: user.name,
+                    user: user,
+                  }}
+                />
+                <Typography>and split</Typography>
+                <ChildModal
+                  props={{
+                    name: "Split Type",
+                    handleTransition: handleTransition,
+                    transition: transition,
+                    expenseFormData: expenseFormData,
+                    setExpenseFormData: setExpenseFormData,
+                    display: "Equally",
+                    user: user,
+                  }}
+                />
+              </Box>
+              <Box
+                sx={{
+                  width: "100%",
+                  textAlign: "center",
+                  my: 1.5,
                 }}
-              />
-              <ChildModal
-                props={{
-                  name: "Group",
-                  allGroups: allGroups,
-                  handleTransition: handleTransition,
-                  transition: transition,
-                  expenseFormData: expenseFormData,
-                  setExpenseFormData: setExpenseFormData,
-                  display: "No Group Selected",
-                  user: user,
+              >
+                <ChildModal
+                  props={{
+                    name: "Group",
+                    allGroups: allGroups,
+                    handleTransition: handleTransition,
+                    transition: transition,
+                    expenseFormData: expenseFormData,
+                    setExpenseFormData: setExpenseFormData,
+                    display: "No Group Selected",
+                    user: user,
+                  }}
+                />
+              </Box>
+              <Box
+                sx={{
+                  width: "100%",
+                  textAlign: "center",
+                  my: 1.5,
                 }}
-              />
-              <ChildModal
+              >
+                <ChildModal
                 props={{
                   name: "Date",
                   handleTransition: handleTransition,
@@ -280,17 +323,10 @@ export default function AddExpenseForm({ props }) {
                   user: user,
                 }}
               />
-              <ChildModal
-                props={{
-                  name: "Split Type",
-                  handleTransition: handleTransition,
-                  transition: transition,
-                  expenseFormData: expenseFormData,
-                  setExpenseFormData: setExpenseFormData,
-                  display: "EQUAL",
-                  user: user,
-                }}
-              />
+              </Box>
+
+              
+
               <Button
                 type="submit"
                 fullWidth

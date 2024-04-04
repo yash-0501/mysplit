@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import {
@@ -15,8 +15,10 @@ import {
   Divider,
 } from "@mui/material";
 import Header from "../../components/header/header";
+import UserContext from "../../../context/userContext";
 
 const ExpenseInfo = () => {
+  const { user } = useContext(UserContext);
   const { id } = useParams();
   const [expense, setExpense] = useState(null);
 
@@ -113,7 +115,7 @@ const ExpenseInfo = () => {
 
   return (
     <>
-      <Header />
+      <Header props={{ user }} />
       <Container>
         {expense && (
           <Paper elevation={3} sx={{ p: 2, mb: 2 }}>

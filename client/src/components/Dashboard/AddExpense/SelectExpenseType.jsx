@@ -1,4 +1,4 @@
-import { List, ListItem, ListItemText } from "@mui/material";
+import { List, ListItem, ListItemText, Typography } from "@mui/material";
 import React from "react";
 
 const SelectSplitType = ({ props }) => {
@@ -19,7 +19,7 @@ const SelectSplitType = ({ props }) => {
 
   return (
     <>
-      <List>
+      <List sx={{ border: "1px solid black", py: 0, borderRadius: "5px", width:'50%' }}>
         {allSplitTypes.map((splitType, index) => (
           <ListItem sx={{
             cursor: "pointer",
@@ -29,7 +29,7 @@ const SelectSplitType = ({ props }) => {
           }}
           key={index}
           onClick={() => handleSplitTypeUpdate(splitType)}>
-            <ListItemText primary={splitType} />
+            <ListItemText primary={(<Typography sx={{fontWeight: selectedItem === splitType ? 'bold' : ""  }}>{splitType}</Typography>)} />
           </ListItem>
         ))}
       </List>

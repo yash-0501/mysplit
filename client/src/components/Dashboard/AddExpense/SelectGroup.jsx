@@ -68,13 +68,13 @@ const SelectGroup = ({ props }) => {
           sx={{
             cursor: "pointer",
             borderBottom: "1px solid grey",
-            backgroundColor: selectedItem === null ? "lightgray" : "inherit", // Highlight selected item
+            backgroundColor: selectedItem === null ? "lightgray" : "inherit",
           }}
           onClick={() => handleGroupUpdate(null)}
         >
           <ListItemText
             primary={
-              <Typography fontWeight={"bold"}>Non Group Expense</Typography>
+              <Typography sx={{fontWeight: selectedItem == null ? 'bold' : ""  }}>Non Group Expense</Typography>
             }
           />
         </ListItem>
@@ -85,7 +85,7 @@ const SelectGroup = ({ props }) => {
                 cursor: "pointer",
                 borderBottom: "1px solid grey",
                 backgroundColor:
-                  selectedItem === group ? "lightgray" : "inherit", // Highlight selected item
+                  selectedItem === group ? "lightgray" : "inherit",
               }}
               key={index}
               onClick={() => handleGroupUpdate(group)}
@@ -93,7 +93,7 @@ const SelectGroup = ({ props }) => {
               <ListItemAvatar>
                 <Avatar {...stringAvatar(group.name)}></Avatar>
               </ListItemAvatar>
-              <ListItemText primary={group.name} />
+              <ListItemText primary={(<Typography sx={{fontWeight: selectedItem === group ? 'bold' : ""  }}>{group.name}</Typography>)} />
             </ListItem>
           ))}
       </List>

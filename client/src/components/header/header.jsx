@@ -20,12 +20,12 @@ import toast from "react-hot-toast";
 import { useContext } from "react";
 import UserContext from "../../../context/userContext";
 
-const pages = ["Products", "Pricing", "Blog"];
+const pages = [];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
 function Header({ props }) {
-  const user = props;
-
+  const user = props.user;
+  console.log(props.user)
   const { setUser } = useContext(UserContext);
   const navigate = useNavigate();
   const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -72,7 +72,7 @@ function Header({ props }) {
                 textDecoration: "none",
               }}
             >
-              <Link to={'/'} replace style={{ textDecoration: "none", color: "inherit" }}>LOGO</Link>
+              <Link to={'/'} replace style={{ textDecoration: "none", color: "inherit" }}>MySplit</Link>
             </Typography>
 
             <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
@@ -128,7 +128,7 @@ function Header({ props }) {
                 textDecoration: "none",
               }}
             >
-              LOGO
+              MySplit
             </Typography>
             <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
               {pages.map((page) => (
@@ -158,7 +158,7 @@ function Header({ props }) {
                   <Avatar
                     alt={user ? user.name : "default"}
                     src="/static/images/avatar/2.jpg"
-                  />
+                  ></Avatar>
                 </IconButton>
               </Tooltip>
               <Menu

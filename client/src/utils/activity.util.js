@@ -2,6 +2,7 @@ import axios from "axios"
 
 const fetchExpenses =  (setExpenses) => {
     axios.get('/expenses').then(({data})=>{
+      console.log(data);
       if(data.error) setExpenses([]);
       else
         setExpenses(data.expenses);

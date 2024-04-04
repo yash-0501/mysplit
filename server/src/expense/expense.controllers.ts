@@ -25,31 +25,6 @@ const getAllExpensesHandler = async (req: Request, res: Response) => {
       const user = await User.findOne({ email: reqUser.email });
       if (!user) return res.json({ error: "No such user" });
 
-      const pipeline = [
-        {
-          $unwind: "$participants",
-        },
-        {
-          $match: {
-            "participants.participant": user._id,
-          },
-        },
-
-        {
-          $project: {
-            _id: 1,
-            description: 1,
-            amount: 1,
-            createdBy: 1,
-            createdAt: 1,
-            expenseDate: 1,
-            paidBy: 1,
-            group: 1,
-            yourShare: "$participants.share",
-          },
-        },
-      ];
-
       let response: ExpenseType[] = [];
       await Expense.aggregate()
         .unwind("participants")
@@ -92,7 +67,6 @@ const getAllExpensesHandler = async (req: Request, res: Response) => {
           as: "group.members",
           pipeline: [{ $project: { _id: 1, name: 1, email: 1 } }],
         })
-        
         .project({
           _id: 1,
           description: 1,
@@ -105,8 +79,10 @@ const getAllExpensesHandler = async (req: Request, res: Response) => {
           participants: 1,
           yourShare: "$participants.share",
         })
-        .then((data) => {console.log(data)
-        response=data})
+        .sort({ createdAt: -1 })
+        .then((data) => {
+          response = data;
+        })
         .catch((err) => console.log(err));
 
       return res.json({ expenses: response });

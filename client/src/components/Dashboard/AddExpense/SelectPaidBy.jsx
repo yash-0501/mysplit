@@ -79,7 +79,7 @@ const SelectPaidBy = ({ props }) => {
               <ListItemAvatar>
                 <Avatar {...stringAvatar(participant.name)}></Avatar>
               </ListItemAvatar>
-              <ListItemText primary={participant.name} />
+              <ListItemText primary={(<Typography sx={{fontWeight: selectedItem._id === participant._id ? 'bold' : ""  }}>{participant.name}</Typography>)} />
             </ListItem>
           ))}
       </List>
