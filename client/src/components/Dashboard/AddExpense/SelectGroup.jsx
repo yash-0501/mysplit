@@ -1,5 +1,6 @@
 import {
   Avatar,
+  Box,
   Divider,
   List,
   ListItem,
@@ -62,7 +63,12 @@ const SelectGroup = ({ props }) => {
   };
 
   return (
-    <>
+    <Box sx={{
+      maxHeight :'70%',
+      overflowY:'auto',
+      border:'1px solid gray',
+      borderRadius:'2px'
+    }}>
       <List sx={{ border: "1px solid black", py: 0, borderRadius: "5px" }}>
         <ListItem
           sx={{
@@ -97,7 +103,7 @@ const SelectGroup = ({ props }) => {
             </ListItem>
           ))}
       </List>
-    </>
+    </Box>
   );
 };
 

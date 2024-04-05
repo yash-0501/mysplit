@@ -3,12 +3,12 @@ import Debts from "./Debts";
 import BalanceSummary from "./BalanceSummary";
 import AddExpenseForm from "./AddExpenseForm";
 import { Link } from "react-router-dom";
+import CreateGroup from "./CreateGroup";
 
 const Dashboard = ({ props }) => {
   const user = props.user;
   const balance = props.balance;
   const balanceDetails = props.balanceDetails;
-
 
   return (
     <Box
@@ -73,7 +73,13 @@ const Dashboard = ({ props }) => {
               </Typography>
             )}
             <Box>
-              <AddExpenseForm props={{ user: user, setDataUpdated: props.setDataUpdated, dataUpdated:props.dataUpdated  }} />
+              <AddExpenseForm
+                props={{
+                  user: user,
+                  setDataUpdated: props.setDataUpdated,
+                  dataUpdated: props.dataUpdated,
+                }}
+              />
               <Button
                 variant="contained"
                 color="success"
@@ -87,18 +93,9 @@ const Dashboard = ({ props }) => {
               >
                 Settle Now?
               </Button>
-              <Button
-                variant="contained"
-                color="warning"
-                href="/groups/add"
-                sx={{
-                  ml: 2,
-                  my: 1,
-                }}
-                size="small"
-              >
-                Join Friends?
-              </Button>
+              <CreateGroup
+                props={{ user: user, setDataUpdated: props.setDataUpdated }}
+              />
             </Box>
           </Box>
         </Paper>

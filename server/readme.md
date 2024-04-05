@@ -16,15 +16,15 @@ Splitwise:
             This Month
             Last Month Overall
 
-    5 - Balances (Who owes whom, who gets back what from whom)
+    5 - Balances (Who owes whom, who gets back what from whom) ---------------- Done
 
-    6 - Simplify Debts (Group Level)
+    6 - Simplify Debts (Group Level) 
 
     7 - Choose A Default Split for the group
 
     8 - Add Friends in splitwise
 
-    9 - ACITVITY SECTION - DATE WISE -- SHOW EXPENSES
+    9 - ACITVITY SECTION - DATE WISE -- SHOW EXPENSES ----------------------- Done
 
     10 - REMINDER
 
@@ -43,3 +43,9 @@ Splitwise:
 
 
     EDIT EXPENSE
+
+
+
+    Routes to Optimize 
+        - /expense/add
+        - /balance/show

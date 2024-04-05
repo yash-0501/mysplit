@@ -3,11 +3,11 @@ import Chip from "@mui/material/Chip";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 
-export default function SearchParticipants({ props }) {
+export default function SearchFriends({ props }) {
   const participants = props.allUsers;
   const currUser = props.user;
-  const setExpenseFormData = props.setExpenseFormData;
-  const expenseFormData = props.expenseFormData;
+  const setGroupFormData = props.setGroupFormData;
+  const groupFormData = props.groupFormData;
 
   const fixedOptions = [participants[0]];
   const [value, setValue] = React.useState([...fixedOptions]);
@@ -26,7 +26,7 @@ export default function SearchParticipants({ props }) {
           ...fixedOptions,
           ...newValue.filter((option) => fixedOptions.indexOf(option) === -1),
         ]);
-        setExpenseFormData({ ...expenseFormData, participants: [...newValue] });
+        setGroupFormData({ ...groupFormData, groupMembers: [...newValue] });
       }}
       options={participants}
       getOptionLabel={(option) => option.name}
@@ -43,7 +43,7 @@ export default function SearchParticipants({ props }) {
         <TextField
           required={value.length < 2}
           {...params}
-          label="Split Between"
+          label="Add To Your Squad"
           placeholder="Favorites"
         />
       )}

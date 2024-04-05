@@ -18,7 +18,7 @@ export default function ActivityList({ props }) {
       {expenses.map((expense, index) => (
         <Link
           to={`expenses/${expense._id}`}
-          key={expense._id}
+          key={index}
           style={{ textDecoration: "none", color: "inherit" }}
         >
           <ListItem alignItems="center">
@@ -46,7 +46,7 @@ export default function ActivityList({ props }) {
                     {expense.paidBy.email == user.email
                       ? "You "
                       : expense.paidBy.name + " "}
-                    paid {expense.amount}
+                    paid {expense.amount} {expense.group.name ? "in " + expense.group.name : ""}
                   </Typography>
                   <br />
                   {expense.paidBy.email == user.email

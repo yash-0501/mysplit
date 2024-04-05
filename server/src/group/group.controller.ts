@@ -9,16 +9,20 @@ import { Balance, Debt } from "../balance/balance.models";
 import { fetchGroupWiseExpenseSummary } from "../expense/service/fetchSummary.GroupWise";
 
 const clearData = async (req: Request, res: Response) => {
-  try {
-    await Expense.deleteMany({});
-    await Group.updateMany({},{$set:{totalExpense:0}});
-    // await User.deleteMany({});
-    await Debt.deleteMany({});
-    await Balance.deleteMany({});
-    return res.json({ message: "Deleted Successfully!" });
-  } catch (err) {
-    res.json(err);
-  }
+  const currUser = req.user as UserType;
+  if (currUser.email === "say2yasha2000@gmail.com") {
+    try {
+      await Expense.deleteMany({});
+      // await Group.deleteMany({});
+      await Group.updateMany({},{$set:{totalExpense:0}});
+      // await User.deleteMany({});
+      await Debt.deleteMany({});
+      await Balance.deleteMany({});
+      return res.json({ message: "Deleted Successfully!" });
+    } catch (error) {
+      res.json(error);
+    }
+  } else res.json({ error: "You are Unauthorized\n Stay Away Dude!" });
 };
 
 const showGroups = async (req: Request, res: Response) => {
@@ -26,16 +30,18 @@ const showGroups = async (req: Request, res: Response) => {
   try {
     if (reqUser) {
       const user = await User.findOne({ email: reqUser.email });
-      if (!user) return res.status(401).json({ error: "No such user" });
+      if (!user) return res.json({ error: "No such user" });
       const userGroups = await Group.find({
         members: user._id,
-      }).sort({ _id: -1 }).populate('members', '_id email name');
+      })
+        .sort({ _id: -1 })
+        .populate("members", "_id email name");
       if (!userGroups || userGroups.length == 0)
         return res.json({ error: "No Groups yet, create or join one!" });
       else return res.json({ user: reqUser, groups: userGroups });
     }
-  } catch (err) {
-    return res.json(err);
+  } catch (error) {
+    return res.json(error);
   }
 };
 
@@ -45,7 +51,7 @@ const getGroupExpenseSummary = async (req: Request, res: Response) => {
   try {
     if (reqUser) {
       const user = await User.findOne({ email: reqUser.email });
-      if (!user) return res.status(401).json({ error: "No such user" });
+      if (!user) return res.json({ error: "No such user" });
 
       const userGroup = await Group.findById(groupId);
 
@@ -58,8 +64,8 @@ const getGroupExpenseSummary = async (req: Request, res: Response) => {
       );
       return res.json({ expenseData, totalGroupSpend: userGroup.totalExpense });
     }
-  } catch (err) {
-    return res.json(err);
+  } catch (error) {
+    return res.json(error);
   }
 };
 
@@ -68,16 +74,14 @@ const createGroup = async (req: Request, res: Response) => {
   try {
     if (reqUser) {
       const user = await User.findOne({ email: reqUser.email });
-      if (!user) return res.status(401).json({ error: "No such user" });
+      if (!user) return res.json({ error: "No such user" });
       const { name, groupMembers } = req.body;
       let members: Types.ObjectId[] = [];
 
-      members.push(user._id);
       if (groupMembers) {
         for (const data of groupMembers) {
           const member = await User.findById(data);
-          if (!member) return res.status(401).json({ error: "No such user" });
-          if (member._id == user._id) continue;
+          if (!member) return res.json({ error: "No such user" });
           members.push(member._id);
         }
       }
@@ -86,12 +90,15 @@ const createGroup = async (req: Request, res: Response) => {
       const parsedGroupData = await groupSchema.parseAsync(groupData);
       const newGroup = new Group(parsedGroupData);
       await newGroup.save();
-      return res.status(200).json({ group: newGroup });
+      return res.json({
+        group: newGroup,
+        message: "Group Created Successfully!",
+      });
     } else {
-      return res.status(401).json({ error: "Unauthorized" });
+      return res.json({ error: "Unauthorized" });
     }
-  } catch (err) {
-    return res.json(err);
+  } catch (error) {
+    return res.json(error);
   }
 };
 
@@ -102,7 +109,7 @@ const getGroupDetail = async (req: Request, res: Response) => {
   try {
     if (reqUser) {
       const user = await User.findOne({ email: reqUser.email });
-      if (!user) return res.status(401).json({ error: "No such user" });
+      if (!user) return res.json({ error: "No such user" });
 
       const foundGroup = await Group.findOne({ _id: groupId })
         .populate("members", "email")
@@ -111,7 +118,7 @@ const getGroupDetail = async (req: Request, res: Response) => {
       if (!foundGroup)
         return res.json({ error: "No Groups yet, create or join one!" });
 
-      return res.json(foundGroup);
+      return res.json({ foundGroup, message: "Group Found" });
     }
     return res.json({ error: "No such user exists!" });
   } catch (err) {
@@ -126,7 +133,7 @@ const editGroup = async (req: Request, res: Response) => {
   try {
     if (reqUser) {
       const user = await User.findOne({ email: reqUser.email });
-      if (!user) return res.status(401).json({ error: "No such user" });
+      if (!user) return res.json({ error: "No such user" });
 
       const foundGroup = await Group.findOne({ _id: groupId });
 
@@ -144,11 +151,11 @@ const editGroup = async (req: Request, res: Response) => {
         { new: true }
       );
 
-      return res.json(updatedGroup);
+      return res.json({ updatedGroup, message: "Updated Group Successfully!" });
     }
     return res.json({ error: "No such user exists!" });
-  } catch (err) {
-    return res.json(err);
+  } catch (error) {
+    return res.json(error);
   }
 };
 

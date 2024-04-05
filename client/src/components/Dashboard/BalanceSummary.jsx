@@ -27,7 +27,7 @@ const BalanceSummary = ({ props }) => {
             {" "}
             Total Balance
             <Typography color={balColor} fontWeight={"bold"}>
-              {balanceDetails.totalBalance > 0
+              {balanceDetails.totalBalance >= 0
                 ? " + " + balanceDetails.totalBalance
                 : " - " + -balanceDetails.totalBalance}
             </Typography>
