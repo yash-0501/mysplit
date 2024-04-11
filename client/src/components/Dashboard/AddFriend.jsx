@@ -16,23 +16,19 @@ import {
   TextField,
 } from "@mui/material";
 
-import fetchAllGroups from "../../utils/getAllGroups.util";
 import fetchAllUsers from "../../utils/getAllUsers.utli";
 
 import { useLocation, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import Loader from "../Loader/Loader";
-import SearchFriends from "./AddGroup/SearchFriends";
-import createGroup from "../../utils/createGroup.util";
+import SearchUsers from "./AddFriend/SearchUsers";
+import addFriend from "../../utils/addFriend.util";
 
-export default function CreateGroup({ props }) {
+
+export default function AddFriend({ props }) {
   const user = props.user;
 
-  const groupFormDataState = {
-    name: "",
-    groupMembers: [],
-  };
-  const [groupFormData, setGroupFormData] = React.useState(groupFormDataState);
+  const [friend, setFriend] = React.useState(null);
 
   const [open, setOpen] = React.useState(false);
   const [loader, setLoader] = React.useState(false);
@@ -60,7 +56,7 @@ export default function CreateGroup({ props }) {
 
   const handleOpen = () => {
     setOpen(true);
-    setGroupFormData(groupFormDataState);
+    setFriend(null);
   };
   const handleClose = () => {
     setOpen(false);
@@ -68,12 +64,12 @@ export default function CreateGroup({ props }) {
 
   const handleCreateGroup = async(event) => {
     event.preventDefault();
-    // console.log(groupFormData, "Helooooo");
+    console.log(friend, "Helooooo");
     showLoader();
-    await createGroup(groupFormData);
+    await addFriend(friend);
     showLoader();
     handleClose();
-    setGroupFormData(groupFormDataState);
+    setFriend(null);
     props.setDataUpdated(Date.now());
   };
 
@@ -87,7 +83,7 @@ export default function CreateGroup({ props }) {
       <Box sx={{ display: "inline" }}>
         <Button
           variant="contained"
-          color="warning"
+          color="primary"
           onClick={handleOpen}
           sx={{
             ml: 2,
@@ -95,7 +91,7 @@ export default function CreateGroup({ props }) {
           }}
           size="small"
         >
-          Split Squad?
+          Add Friend?
         </Button>
         <Modal
           aria-labelledby="transition-modal-title"
@@ -124,31 +120,12 @@ export default function CreateGroup({ props }) {
                   width: "100%",
                 }}
               >
-                <TextField
-                      margin="normal"
-                      required
-                      fullWidth
-                      id="name"
-                      label="Group Name"
-                      name="name"
-                      type="text"
-                      onChange={(e) =>
-                        setGroupFormData({
-                          ...groupFormData,
-                          name: e.target.value,
-                        })
-                      }
-                      value={groupFormData.name}
-                      sx={{
-                        m:2
-                      }}
-                    />
-                <SearchFriends
+                <SearchUsers
                   props={{
                     allUsers: allUsers,
                     user: user,
-                    setGroupFormData: setGroupFormData,
-                    groupFormData: groupFormData,
+                    setFriend: setFriend,
+                    friend: friend,
                   }}
                 />
                 <Button
@@ -158,7 +135,7 @@ export default function CreateGroup({ props }) {
                   sx={{ mt: 3, mb: 2 }}
                   fullWidth
                 >
-                  Create Group
+                  Add as a friend
                 </Button>
               </Box>
             </Box>

@@ -1,5 +1,6 @@
 import { Router } from "express";
 import {
+  handleAddFriend,
   handleCreateUser,
   listAllUsers,
   listCurrentUser,
@@ -12,5 +13,7 @@ router.post("/createUser", handleCreateUser);
 
 router.get("/", listAllUsers);
 router.get("/profile", isLoggedIn, listCurrentUser);
+
+router.post("/addFriend", handleAddFriend)
 
 export { router };

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { Types } from "mongoose";
 
 const userSchema = z
   .object({
@@ -13,6 +14,7 @@ const userSchema = z
         invalid_type_error: "Invalid Email Entered.",
       })
       .email(),
+    friends: z.array(z.custom<Types.ObjectId>()).default([]),
     password: z
       .string({
         required_error: "Password is required",

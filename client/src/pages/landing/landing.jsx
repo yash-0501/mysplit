@@ -9,9 +9,10 @@ import fetchBalance from "../../utils/balance.utl";
 import fetchBalanceSummary from "../../utils/balanceSummary.util";
 import Dashboard from "../../components/Dashboard/DashBoard";
 import Loader from "../../components/Loader/Loader";
+import getCurrUser from "../../utils/getCurrUser.util";
 
 const LandingPage = () => {
-  const { user } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
   
 
   const [expenses, setExpenses] = useState([]);
@@ -35,7 +36,8 @@ const LandingPage = () => {
       fetchExpenses(setExpenses);
       fetchBalance(setBalance);
       fetchBalanceSummary(setBalanceDetails);
-      setCurrUser(user);
+      getCurrUser(setCurrUser);
+      setUser(user);
     }
 
     return () => {
@@ -52,7 +54,7 @@ const LandingPage = () => {
         flexWrap: 1,
       }}
     >
-      <Header props={{ user }} />
+      <Header props={{ user:currUser }} />
       <Container sx={{ height: "100%", overflowY: "auto" }}>
         {(balance!==null && expenses !== null && balanceDetails !==null)?(<Box sx={{ width: "100%", display: "flex", height: "100%" }}>
           <Dashboard

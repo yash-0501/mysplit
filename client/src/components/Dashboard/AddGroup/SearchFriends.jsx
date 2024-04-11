@@ -4,8 +4,8 @@ import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 
 export default function SearchFriends({ props }) {
-  const participants = props.allUsers;
   const currUser = props.user;
+  const participants = [currUser, ...currUser.friends];
   const setGroupFormData = props.setGroupFormData;
   const groupFormData = props.groupFormData;
 

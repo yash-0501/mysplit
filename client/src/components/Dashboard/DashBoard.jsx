@@ -4,6 +4,7 @@ import BalanceSummary from "./BalanceSummary";
 import AddExpenseForm from "./AddExpenseForm";
 import { Link } from "react-router-dom";
 import CreateGroup from "./CreateGroup";
+import AddFriend from "./AddFriend";
 
 const Dashboard = ({ props }) => {
   const user = props.user;
@@ -80,19 +81,9 @@ const Dashboard = ({ props }) => {
                   dataUpdated: props.dataUpdated,
                 }}
               />
-              <Button
-                variant="contained"
-                color="success"
-                component={Link}
-                to="/settle"
-                sx={{
-                  ml: 2,
-                  my: 1,
-                }}
-                size="small"
-              >
-                Settle Now?
-              </Button>
+              <AddFriend
+                props={{ user: user, setDataUpdated: props.setDataUpdated }}
+              />
               <CreateGroup
                 props={{ user: user, setDataUpdated: props.setDataUpdated }}
               />

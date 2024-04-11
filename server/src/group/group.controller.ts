@@ -14,8 +14,8 @@ const clearData = async (req: Request, res: Response) => {
     try {
       await Expense.deleteMany({});
       // await Group.deleteMany({});
-      await Group.updateMany({},{$set:{totalExpense:0}});
-      // await User.deleteMany({});
+      await Group.updateMany({}, { $set: { totalExpense: 0 } });
+      await User.updateMany({}, { $set: {friends: []}});
       await Debt.deleteMany({});
       await Balance.deleteMany({});
       return res.json({ message: "Deleted Successfully!" });
@@ -114,11 +114,17 @@ const getGroupDetail = async (req: Request, res: Response) => {
       const foundGroup = await Group.findOne({ _id: groupId })
         .populate("members", "email")
         .populate("createdBy");
-
+      const balances = await Balance.find({ group: foundGroup }).populate(
+        "user",
+        "email"
+      );
+      const debts = await Debt.find({ group: foundGroup })
+        .populate("paidBy", "email")
+        .populate("paidTo", "email");
       if (!foundGroup)
         return res.json({ error: "No Groups yet, create or join one!" });
 
-      return res.json({ foundGroup, message: "Group Found" });
+      return res.json({ foundGroup, balances, debts, message: "Group Found" });
     }
     return res.json({ error: "No such user exists!" });
   } catch (err) {

@@ -2,6 +2,7 @@ import axios from "axios"
 
 const fetchAllUsers = (setAllUsers) => {
     axios.get("/users/").then(({data})=>{
+        console.log(data)
         if(data.error)
             setAllUsers([]);
         else

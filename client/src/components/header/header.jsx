@@ -53,6 +53,10 @@ function Header({ props }) {
     navigate("/login", { replace: true });
   };
 
+  const handleAction = () => {
+    toast.success("clicked!");
+  }
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
@@ -192,7 +196,7 @@ function Header({ props }) {
                     <Typography
                       textAlign="center"
                       variant="button"
-                      onClick={handleLogout}
+                      onClick={setting === "Logout" ? handleLogout : handleAction}
                     >
                       {setting}
                     </Typography>
